@@ -1,6 +1,8 @@
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { Observable } from 'rxjs';
 
+export const nodeAddress = 'ws://127.0.0.1:9944';
+
 class SubstrateService {
   constructor() {
     this.onUpdateState = new Observable(observer => {
@@ -10,7 +12,7 @@ class SubstrateService {
 
   async connect() {
     // Initialise the provider to connect to the local node
-    const provider = new WsProvider('ws://127.0.0.1:9944');
+    const provider = new WsProvider(nodeAddress);
 
     // TODO: check if unable to connect
 
