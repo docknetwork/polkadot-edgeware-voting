@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import styled from 'styled-components';
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -17,10 +18,16 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
+import Container from '@material-ui/core/Container';
 
 import substrateService, {nodeAddress} from '../services/substrate';
 
 const drawerWidth = 240;
+
+const ContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -78,21 +85,31 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const listItems = [{
+  name: 'Dashboard',
+  icon: <InboxIcon />,
+}, {
+  name: 'Proposals',
+  icon: <MailIcon />,
+}, {
+  name: 'Submit Proposal',
+  icon: <MailIcon />,
+}];
+
 export default function PersistentDrawerLeft({children}) {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   const [nodeState, setNodeState] = useState(null);
 
-  substrateService.onUpdateState.subscribe(value => {
-    console.log(value);
-    setNodeState(value);
-  });
-
   useEffect(() => {
     if (!nodeState) {
       setNodeState({
         connected: false
+      });
+
+      substrateService.onUpdateState.subscribe(value => {
+        setNodeState(value);
       });
       substrateService.connect();
     }
@@ -152,10 +169,10 @@ export default function PersistentDrawerLeft({children}) {
         </div>
         <Divider />
         <List>
-          {['Dashboard', 'Proposals', 'Submit Proposal'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>{index === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={text} />
+          {listItems.map((listItem, index) => (
+            <ListItem button key={listItem.name}>
+              <ListItemIcon>{listItem.icon}</ListItemIcon>
+              <ListItemText primary={listItem.name} />
             </ListItem>
           ))}
         </List>
@@ -166,7 +183,12 @@ export default function PersistentDrawerLeft({children}) {
         })}
       >
         <div className={classes.drawerHeader} />
-        {children}
+
+        <Container maxWidth="xl">
+          <ContentWrapper>
+            {children}
+          </ContentWrapper>
+        </Container>
       </main>
     </div>
   );
