@@ -75,9 +75,14 @@ const Index = () => {
     });
   }
 
+  function getEvents() {
+    substrateService.getEvents();
+  }
+
   useEffect(() => {
     if (blockCount === -1) {
       getBlocks();
+      getEvents();
     }
   });
 
