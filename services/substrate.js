@@ -3,6 +3,12 @@ import { Observable } from 'rxjs';
 
 export const nodeAddress = 'ws://127.0.0.1:9944';
 
+import uiTypes from './ui-types';
+
+import { IdentityTypes } from 'edgeware-node-types/dist/identity';
+import { VotingTypes } from 'edgeware-node-types/dist/voting';
+import { Balance2, TreasuryRewardTypes } from 'edgeware-node-types/dist/treasuryReward';
+
 class SubstrateService {
   constructor() {
     this.state = {};
@@ -30,7 +36,15 @@ class SubstrateService {
     // TODO: check if unable to connect
 
     // Create the API and wait until ready
-    this.api = await ApiPromise.create({ provider });
+    this.api = await ApiPromise.create({
+      provider,
+      types: {
+        ...IdentityTypes,
+        ...VotingTypes,
+        ...TreasuryRewardTypes,
+        ...Balance2,
+      }
+    });
 
     // Retrieve the chain & node information information via rpc calls
     const [chain, nodeName, nodeVersion] = await Promise.all([
@@ -86,20 +100,23 @@ class SubstrateService {
       console.log(`\nReceived ${events.length} events:`);
 
       // Loop through the Vec<EventRecord>
-      events.forEach((record) => {
-        // Extract the phase, event and the event types
-        const { event, phase } = record;
-        const types = event.typeDef;
 
-        // Show what we are busy with
-        console.log(`\t${event.section}:${event.method}:: (phase=${phase.toString()})`);
-        console.log(`\t\t${event.meta.documentation.toString()}`);
+      events.forEach(callback);
 
-        // Loop through each of the parameters, displaying the type and data
-        event.data.forEach((data, index) => {
-          console.log(`\t\t\t${types[index].type}: ${data.toString()}`);
-        });
-      });
+      // events.forEach((record) => {
+      //   // Extract the phase, event and the event types
+      //   const { event, phase } = record;
+      //   const types = event.typeDef;
+      //
+      //   // Show what we are busy with
+      //   console.log(`\t${event.section}:${event.method}:: (phase=${phase.toString()})`);
+      //   console.log(`\t\t${event.meta.documentation.toString()}`);
+      //
+      //   // Loop through each of the parameters, displaying the type and data
+      //   event.data.forEach((data, index) => {
+      //     console.log(`\t\t\t${types[index].type}: ${data.toString()}`);
+      //   });
+      // });
     });
   }
 

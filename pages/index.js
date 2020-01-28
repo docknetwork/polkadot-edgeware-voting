@@ -76,7 +76,9 @@ const Index = () => {
   }
 
   function getEvents() {
-    substrateService.getEvents();
+    substrateService.getEvents(record => {
+      console.log('record', record)
+    });
   }
 
   useEffect(() => {
