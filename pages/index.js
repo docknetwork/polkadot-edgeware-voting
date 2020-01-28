@@ -61,23 +61,52 @@ const Block = ({block}) => {
   );
 };
 
+const Event = ({record}) => {
+  const { event, phase } = record;
+  const types = event.typeDef;
+  const classes = useStyles();
+
+  return (
+    <CustomCard className={classes.card}>
+      <CardContent>
+        <Typography className={classes.title} color="textSecondary" gutterBottom>
+          {`${event.section}:${event.method}:: (phase=${phase.toString()})`}
+        </Typography>
+        <Typography variant="h5" component="h2">
+          {`${event.meta.documentation.toString()}`}
+        </Typography>
+
+        {event.data.map((data, index) => (
+          <Typography className={classes.pos} color="textSecondary">
+            {`${types[index].type}: ${data.toString()}`}
+          </Typography>
+        ))}
+      </CardContent>
+    </CustomCard>
+  );
+};
+
 const Index = () => {
   const [isConnecting, setIsConnecting] = useState(false);
   const [isConnected, setConnected] = useState(false);
   const [blocks, setBlocks] = useState([]);
+  const [events, setEvents] = useState([]);
   const [blockCount, setBlockCount] = useState(-1);
+  const [eventCount, setEventCount] = useState(-1);
 
   async function getBlocks() {
     setBlockCount(0);
     const unsubscribe = await substrateService.subscribeNewHeads((header) => {
       blocks.push(header);
-      setBlockCount(header.number);
+      setBlockCount(blocks.length);
     });
   }
 
   function getEvents() {
     substrateService.getEvents(record => {
-      console.log('record', record)
+      events.push(record);
+      setEventCount(events.length);
+      console.log('record', record);
     });
   }
 
@@ -104,11 +133,11 @@ const Index = () => {
 
         <Grid item xs={6}>
           <Typography variant="h5">
-            Events (0)
+            Events ({events.length})
           </Typography>
-          <CustomCard>
-            xs=6
-          </CustomCard>
+          {events.map((event, index) => (
+            <Event record={event} key={index} />
+          ))}
         </Grid>
       </Grid>
     </Layout>

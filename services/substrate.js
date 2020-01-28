@@ -1,13 +1,11 @@
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { Observable } from 'rxjs';
 
-export const nodeAddress = 'ws://127.0.0.1:9944';
-
-import uiTypes from './ui-types';
-
 import { IdentityTypes } from 'edgeware-node-types/dist/identity';
 import { VotingTypes } from 'edgeware-node-types/dist/voting';
 import { Balance2, TreasuryRewardTypes } from 'edgeware-node-types/dist/treasuryReward';
+
+export const nodeAddress = 'ws://127.0.0.1:9944';
 
 class SubstrateService {
   constructor() {
