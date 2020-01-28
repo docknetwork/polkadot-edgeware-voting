@@ -77,7 +77,7 @@ const Event = ({record}) => {
         </Typography>
 
         {event.data.map((data, index) => (
-          <Typography className={classes.pos} color="textSecondary">
+          <Typography className={classes.pos} color="textSecondary" key={index}>
             {`${types[index].type}: ${data.toString()}`}
           </Typography>
         ))}
