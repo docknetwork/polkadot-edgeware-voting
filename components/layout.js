@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import Link from 'next/link';
 import styled from 'styled-components';
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -88,12 +89,15 @@ const useStyles = makeStyles(theme => ({
 const listItems = [{
   name: 'Dashboard',
   icon: <InboxIcon />,
+  href: '/',
 }, {
   name: 'Proposals',
   icon: <MailIcon />,
+  href: '/proposals',
 }, {
   name: 'Submit Proposal',
   icon: <MailIcon />,
+  href: '/submit-proposal',
 }];
 
 export default function PersistentDrawerLeft({children}) {
@@ -104,12 +108,9 @@ export default function PersistentDrawerLeft({children}) {
 
   useEffect(() => {
     if (!nodeState) {
+      substrateService.onUpdateState.subscribe(setNodeState);
       setNodeState({
         connected: false
-      });
-
-      substrateService.onUpdateState.subscribe(value => {
-        setNodeState(value);
       });
       substrateService.connect();
     }
@@ -170,10 +171,12 @@ export default function PersistentDrawerLeft({children}) {
         <Divider />
         <List>
           {listItems.map((listItem, index) => (
-            <ListItem button key={listItem.name}>
-              <ListItemIcon>{listItem.icon}</ListItemIcon>
-              <ListItemText primary={listItem.name} />
-            </ListItem>
+            <Link href={listItem.href}>
+              <ListItem button key={listItem.name}>
+                <ListItemIcon>{listItem.icon}</ListItemIcon>
+                <ListItemText primary={listItem.name} />
+              </ListItem>
+            </Link>
           ))}
         </List>
       </Drawer>

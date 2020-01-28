@@ -9,8 +9,6 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 
-import Layout from '../components/layout';
-
 import substrateService from '../services/substrate';
 
 const CustomCard = styled(Card)`
@@ -118,29 +116,27 @@ const Index = () => {
   });
 
   return (
-    <Layout>
-      <Grid container spacing={3}>
-        {blocks && (
-          <Grid item xs={6}>
-            <Typography variant="h5">
-              Blocks ({blocks.length})
-            </Typography>
-            {blocks.map((block, index) => (
-              <Block block={block} key={index} />
-            ))}
-          </Grid>
-        )}
-
+    <Grid container spacing={3}>
+      {blocks && (
         <Grid item xs={6}>
           <Typography variant="h5">
-            Events ({events.length})
+            Blocks ({blocks.length})
           </Typography>
-          {events.map((event, index) => (
-            <Event record={event} key={index} />
+          {blocks.map((block, index) => (
+            <Block block={block} key={index} />
           ))}
         </Grid>
+      )}
+
+      <Grid item xs={6}>
+        <Typography variant="h5">
+          Events ({events.length})
+        </Typography>
+        {events.map((event, index) => (
+          <Event record={event} key={index} />
+        ))}
       </Grid>
-    </Layout>
+    </Grid>
   );
 };
 
