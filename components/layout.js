@@ -128,6 +128,7 @@ export default function PersistentDrawerLeft({children}) {
     <div className={classes.root}>
       <CssBaseline />
       <AppBar
+        color="inherit"
         className={clsx(classes.appBar, {
           [classes.appBarShift]: open,
         })}
