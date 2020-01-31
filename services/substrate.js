@@ -88,13 +88,7 @@ class SubstrateService {
         .then(() => this.subscribeNewHeads(callback));
     }
 
-
-    // We only display a couple, then unsubscribe
-    let count = 0;
-
-    // Subscribe to the new headers on-chain. The callback is fired when new headers
-    // are found, the call itself returns a promise with a subscription that can be
-    // used to unsubscribe from the newHead subscription
+    // TODO: unsubscribe
     return await this.api.rpc.chain.subscribeNewHeads(callback);
   }
 
@@ -107,25 +101,7 @@ class SubstrateService {
     // Subscribe to system events via storage
     this.api.query.system.events((events) => {
       console.log(`\nReceived ${events.length} events:`);
-
-      // Loop through the Vec<EventRecord>
-
       events.forEach(callback);
-
-      // events.forEach((record) => {
-      //   // Extract the phase, event and the event types
-      //   const { event, phase } = record;
-      //   const types = event.typeDef;
-      //
-      //   // Show what we are busy with
-      //   console.log(`\t${event.section}:${event.method}:: (phase=${phase.toString()})`);
-      //   console.log(`\t\t${event.meta.documentation.toString()}`);
-      //
-      //   // Loop through each of the parameters, displaying the type and data
-      //   event.data.forEach((data, index) => {
-      //     console.log(`\t\t\t${types[index].type}: ${data.toString()}`);
-      //   });
-      // });
     });
   }
 
