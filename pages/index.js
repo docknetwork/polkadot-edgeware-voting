@@ -19,17 +19,6 @@ const useStyles = makeStyles({
   card: {
     minWidth: 275,
   },
-  bullet: {
-    display: 'inline-block',
-    margin: '0 2px',
-    transform: 'scale(0.8)',
-  },
-  title: {
-    fontSize: 14,
-  },
-  pos: {
-    marginBottom: 12,
-  },
 });
 
 const Block = ({block}) => {
@@ -39,19 +28,19 @@ const Block = ({block}) => {
   return (
     <CustomCard className={classes.card}>
       <CardContent>
-        <Typography className={classes.title} color="textSecondary" gutterBottom>
+        <Typography variant="h6" color="textSecondary" gutterBottom>
           {hashHex}
         </Typography>
         <Typography variant="h5" component="h2">
           {`${block.number}`}
         </Typography>
-        <Typography className={classes.pos} color="textSecondary">
+        <Typography color="textSecondary">
           parentHash: {`${block.parentHash}`}
         </Typography>
-        <Typography className={classes.pos} color="textSecondary">
+        <Typography color="textSecondary">
           stateRoot: {`${block.stateRoot}`}
         </Typography>
-        <Typography className={classes.pos} color="textSecondary">
+        <Typography color="textSecondary">
           extrinsicsRoot: {`${block.extrinsicsRoot}`}
         </Typography>
       </CardContent>

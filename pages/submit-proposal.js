@@ -8,6 +8,60 @@ import Box from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
+// pub enum VoteStage {
+// 	// Before voting stage, no votes accepted
+// 	PreVoting,
+// 	// Commit stage, only for commit-reveal-type elections
+// 	Commit,
+// 	// Active voting stage, votes (reveals) allowed
+// 	Voting,
+// 	// Completed voting stage, no more votes allowed
+// 	Completed,
+// }
+
+// pub struct VoteData<AccountId> {
+// 	// creator of vote
+// 	pub initiator: AccountId,
+// 	// Stage of the vote
+// 	pub stage: VoteStage,
+// 	// Type of vote defined abovoe
+// 	pub vote_type: VoteType,
+// 	// Tally metric
+// 	pub tally_type: TallyType,
+// 	// Flag for commit/reveal voting scheme
+// 	pub is_commit_reveal: bool,
+// }
+
+// pub enum VoteType {
+// 	// Binary decision vote, i.e. 2 outcomes
+// 	Binary,
+// 	// Multi option decision vote, i.e. > 2 possible outcomes
+// 	MultiOption,
+// 	// Ranked choice voting
+// 	RankedChoice,
+// }
+
+// pub struct VoteRecord<AccountId> {
+// 	// Identifier of the vote
+// 	pub id: u64,
+// 	// Vote commitments
+// 	pub commitments: Vec<(AccountId, VoteOutcome)>,
+// 	// Vote reveals
+// 	pub reveals: Vec<(AccountId, Vec<VoteOutcome>)>,
+// 	// Vote data record
+// 	pub data: VoteData<AccountId>,
+// 	// Vote outcomes
+// 	pub outcomes: Vec<VoteOutcome>,
+// }
+
+	// Voting::create_vote(who,
+	// 					vote_type,
+	// 					is_commit_reveal,
+	// 					tally_type,
+	// 					outcomes.to_vec())
+  // Voting::advance_stage(vote_id)
+
+
 export default () => {
   return (
     <Container maxWidth="md">

@@ -63,12 +63,23 @@ class SubstrateService {
     }
     this.onConnectCallbacks = [];
 
+    console.log('getProposals', this.getProposals());
+
     return this.setState({
       ...this.state,
       chain,
       nodeName,
       nodeVersion,
     });
+  }
+
+  async getProposals(callback) {
+    if (!this.state.connected) {
+      return this.connect()
+        .then(() => this.getProposals(callback));
+    }
+
+    return this.api.derive.democracy.proposals(callback);
   }
 
   async subscribeNewHeads(callback) {
