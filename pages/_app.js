@@ -4,25 +4,11 @@ import {MuiThemeProvider} from '@material-ui/core/styles';
 import {withStyles} from '@material-ui/core/styles';
 import {PageTransition} from 'next-page-transitions';
 
-import {createMuiTheme} from '@material-ui/core/styles';
+import materialTheme from '../components/theme';
 
 import Layout from '../components/layout';
 
 const TIMEOUT = 250;
-
-const materialTheme = createMuiTheme({
-  typography: {
-    useNextVariants: true,
-  },
-  breakpoints: {
-    keys: ['sm', 'md', 'lg'],
-    values: {
-      sm: 0,
-      md: 768,
-      lg: 1024,
-    },
-  },
-});
 
 class MyApp extends App {
   constructor(props) {
