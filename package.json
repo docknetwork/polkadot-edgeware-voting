@@ -24,6 +24,7 @@
     "@material-ui/core": "^4.9.0",
     "@material-ui/icons": "^4.5.1",
     "@polkadot/api": "^0.100.1",
+    "@polkadot/extension-dapp": "^0.21.0-beta.1",
     "@polkadot/keyring": "^2.1.1",
     "@polkadot/react-api": "^0.38.1",
     "@polkadot/react-hooks": "^0.38.1",
