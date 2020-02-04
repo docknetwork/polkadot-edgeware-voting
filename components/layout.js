@@ -176,7 +176,7 @@ export default function PersistentDrawerLeft({children}) {
         <Divider />
         <List>
           {listItems.map((listItem, index) => (
-            <Link href={listItem.href} key+{index}>
+            <Link href={listItem.href} key={index}>
               <ListItem button key={listItem.name}>
                 <ListItemIcon>{listItem.icon}</ListItemIcon>
                 <ListItemText primary={listItem.name} />
