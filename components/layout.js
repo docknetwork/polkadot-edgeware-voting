@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
+import dynamic from 'next/dynamic';
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -20,6 +21,11 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import Container from '@material-ui/core/Container';
+
+const KeyringTest = dynamic({
+  loader: () => import('./keyring'),
+  ssr: false,
+});
 
 import substrateService, {nodeAddress} from '../services/substrate';
 
@@ -107,14 +113,12 @@ export default function PersistentDrawerLeft({children}) {
   const [nodeState, setNodeState] = useState(null);
 
   useEffect(() => {
-    if (!nodeState) {
-      substrateService.onUpdateState.subscribe(setNodeState);
-      setNodeState({
-        connected: false
-      });
-      substrateService.connect();
-    }
-  }, [nodeState]);
+    substrateService.onUpdateState.subscribe(setNodeState);
+    setNodeState({
+      connected: false
+    });
+    substrateService.connect();
+  },[]);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -146,6 +150,7 @@ export default function PersistentDrawerLeft({children}) {
           {(nodeState && nodeState.connected) ? (
             <Typography variant="h6" noWrap>
               {nodeState.chain} using {nodeState.nodeName} v{nodeState.nodeVersion}
+              <KeyringTest />
             </Typography>
           ) : (
             <Typography variant="h6" noWrap>
@@ -171,7 +176,7 @@ export default function PersistentDrawerLeft({children}) {
         <Divider />
         <List>
           {listItems.map((listItem, index) => (
-            <Link href={listItem.href}>
+            <Link href={listItem.href} key+{index}>
               <ListItem button key={listItem.name}>
                 <ListItemIcon>{listItem.icon}</ListItemIcon>
                 <ListItemText primary={listItem.name} />
