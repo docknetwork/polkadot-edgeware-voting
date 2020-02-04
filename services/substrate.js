@@ -51,6 +51,40 @@ class SubstrateService {
       this.api.rpc.system.version()
     ]);
 
+  // api.derive.democracy...
+  // proposals: ƒ (...args)
+  // referendumInfos: ƒ (...args)
+  // referendums: ƒ (...args)
+  // referendumVotesFor: ƒ (...args)
+  // votes: ƒ (...args)
+
+// propose: (...params) => creator(method(...params))
+// second: (...params) => creator(method(...params))
+// vote: (...params) => creator(method(...params))
+// proxyVote: (...params) => creator(method(...params))
+// emergencyCancel: (...params) => creator(method(...params))
+// externalPropose: (...params) => creator(method(...params))
+// externalProposeMajority: (...params) => creator(method(...params))
+// externalProposeDefault: (...params) => creator(method(...params))
+// fastTrack: (...params) => creator(method(...params))
+// vetoExternal: (...params) => creator(method(...params))
+// cancelReferendum: (...params) => creator(method(...params))
+// cancelQueued: (...params) => creator(method(...params))
+// setProxy: (...params) => creator(method(...params))
+// resignProxy: (...params) => creator(method(...params))
+// removeProxy: (...params) => creator(method(...params))
+// delegate: (...params) => creator(method(...params))
+// undelegate: (...params) => creator(method(...params))
+// clearPublicProposals: (...params) => creator(method(...params))
+// notePreimage: (...params) => creator(method(...params))
+// noteImminentPreimage: (...params) => creator(method(...params))
+// reapPreimage: (...params) => creator(method(...params))
+
+
+    console.log('this.api', this.api)
+    console.log('this.api.tx', this.api.tx)
+        console.log('test democracy', this.api.tx.democracy)
+
     this.state.connected = true;
     this.state.connecting = false;
 
