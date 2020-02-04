@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-// import keyring from '@polkadot/ui-keyring';
+import keyring from '@polkadot/keyring';
 
 export default function KeyringTest() {
   // useEffect(() => {
@@ -11,7 +11,7 @@ export default function KeyringTest() {
 
   return (
     <>
-      Keys: 0
+      Accounts: 0
     </>
   );
 }
