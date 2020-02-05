@@ -54,15 +54,13 @@ import Typography from '@material-ui/core/Typography';
 // 	pub outcomes: Vec<VoteOutcome>,
 // }
 
-	// Voting::create_vote(who,
-	// 					vote_type,
-	// 					is_commit_reveal,
-	// 					tally_type,
-	// 					outcomes.to_vec())
-  // Voting::advance_stage(vote_id)
 
 
 export default () => {
+  // NOTES:
+  // to submit a proposal we need to submit an extrinsic (see https://polkadot.js.org/apps/#/extrinsics connected to same node)
+  // need to build proposal data for signalling.createProposal
+
   return (
     <Container maxWidth="md">
       <Typography variant="h5">
