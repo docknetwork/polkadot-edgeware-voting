@@ -120,8 +120,13 @@ class SubstrateService {
   // https://polkadot.js.org/apps/#/chainstate
 
 
-    return this.api.query.signaling.activeProposals((proposals) => {
+    this.api.query.signaling.activeProposals((proposals) => {
       console.log(`active proposals`, proposals);
+      console.log(proposals.toString());
+    });
+
+    this.api.query.signaling.inactiveProposals((proposals) => {
+      console.log(`inactive proposals`, proposals);
       console.log(proposals.toString());
     });
   }
