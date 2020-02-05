@@ -59,7 +59,7 @@ import Typography from '@material-ui/core/Typography';
 export default () => {
   // NOTES:
   // to submit a proposal we need to submit an extrinsic (see https://polkadot.js.org/apps/#/extrinsics connected to same node)
-  // need to build proposal data for signalling.createProposal
+  // need to build proposal data for signalling.createProposal using sudo alice key
 
   return (
     <Container maxWidth="md">

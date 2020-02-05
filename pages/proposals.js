@@ -18,6 +18,8 @@ const Proposal = ({proposal}) => {
 
   // TODO: turns out this is for subsrate democracy, we need to redo it for edgeware
   // once we are able to submit proposals through UI
+  // see: https://polkadot.js.org/api/substrate/storage.html
+  // The following sections contain Storage methods are part of the default Substrate runtime. On the api, these are exposed via api.query.<module>.<method>.
 
   return (
     <Card>
