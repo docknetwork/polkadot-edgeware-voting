@@ -16,6 +16,9 @@ const Proposal = ({proposal}) => {
   const { balance, hash, index, proposer, seconds } = proposal;
   const seconding = seconds.filter((_address, index) => index !== 0);
 
+  // TODO: turns out this is for subsrate democracy, we need to redo it for edgeware
+  // once we are able to submit proposals through UI
+
   return (
     <Card>
       <CardContent>
