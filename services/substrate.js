@@ -97,8 +97,6 @@ class SubstrateService {
     }
     this.onConnectCallbacks = [];
 
-    console.log('getProposals', this.getProposals());
-
     return this.setState({
       ...this.state,
       chain,
@@ -113,7 +111,19 @@ class SubstrateService {
         .then(() => this.getProposals(callback));
     }
 
-    return this.api.derive.democracy.proposals(callback);
+
+
+  // TODO: turns out this is for subsrate democracy, we need to redo it for edgeware
+  // once we are able to submit proposals through UI
+  // see: https://polkadot.js.org/api/substrate/storage.html
+  // The following sections contain Storage methods are part of the default Substrate runtime. On the api, these are exposed via api.query.<module>.<method>.
+  // https://polkadot.js.org/apps/#/chainstate
+
+
+    return this.api.query.signaling.activeProposals((proposals) => {
+      console.log(`active proposals`, proposals);
+      console.log(proposals.toString());
+    });
   }
 
   async subscribeNewHeads(callback) {
