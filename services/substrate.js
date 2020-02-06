@@ -208,8 +208,13 @@ class SubstrateService {
     });
 
     // example log
-    // makeExtrinsicCall: updated status :: {"events":[],"status":{"Ready":null}}
-    // makeExtrinsicCall: updated status :: {"events":[{"phase":{"ApplyExtrinsic":1},"event":{"index":"0x0c00","data":[false]},"topics":[]},{"phase":{"ApplyExtrinsic":1},"event":{"index":"0x0000","data":[{"weight":0,"class":"operational","paysFee":false}]},"topics":[]}],"status":{"Finalized":"0xf22afbb7f121d3365166dc827cb94551d28232f6146015e50547870a6aaa5523"}}
+    // Current status is Ready
+    // substrate.js:196 Current status is Finalized
+    // substrate.js:199 Transaction included at blockHash 0x5b04f95389862e94fac95390b1f925fe4a01ae51c9c849b3198c73a60ecdaa24
+    // substrate.js:203 	' {"ApplyExtrinsic":1}: treasury.Deposit:: [2445987531568]
+    // substrate.js:203 	' {"ApplyExtrinsic":1}: voting.VoteCreated:: [1,"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",{"binary":null}]
+    // substrate.js:203 	' {"ApplyExtrinsic":1}: signaling.NewProposal:: ["5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","0xd13c7862d41dc35f3c7960c588868730476c5bc847989f57d37dc0ad54e42cec"]
+    // substrate.js:203 	' {"ApplyExtrinsic":1}: system.ExtrinsicSuccess:: [{"weight":10000,"class":0,"paysFee":true}]
   }
 
   async subscribeNewHeads(callback) {
