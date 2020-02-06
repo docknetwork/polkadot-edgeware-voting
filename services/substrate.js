@@ -8,6 +8,9 @@ import { Balance2, TreasuryRewardTypes } from 'edgeware-node-types/dist/treasury
 
 export const nodeAddress = 'ws://127.0.0.1:9944';
 
+import { Keyring } from '@polkadot/api';
+import { stringToU8a, u8aToHex } from '@polkadot/util';
+
 class SubstrateService {
   constructor() {
     this.state = {};
@@ -32,6 +35,9 @@ class SubstrateService {
     // Initialise the provider to connect to the local node
     const provider = new WsProvider(nodeAddress);
 
+    const keyring = new Keyring({ type: 'sr25519' });
+    this.keyring = keyring;
+
     // TODO: check if unable to connect
 
     // Create the API and wait until ready
@@ -45,6 +51,9 @@ class SubstrateService {
         ...Balance2,
       }
     });
+
+    console.log('VotingTypes', VotingTypes)
+    console.log('SignalingTypes', SignalingTypes)
 
     // Retrieve the chain & node information information via rpc calls
     const [chain, nodeName, nodeVersion] = await Promise.all([
@@ -135,8 +144,41 @@ class SubstrateService {
         .then(() => this.createProposal());
     }
 
+    // (Advanced, development-only) add with an implied dev seed and hard derivation
+    const alice = this.keyring.addFromUri('//Alice', { name: 'Alice' });
+    console.log(`${alice.meta.name}: has address ${alice.address} with publicKey [${alice.publicKey}]`);
+    console.log('pairs', this.keyring.getPairs())
+
+
+    // Convert message, sign and then verify
+    const message = stringToU8a('this is our message');
+    const signature = alice.sign(message);
+    const isValid = alice.verify(message, signature);
+
+    // Log info
+    console.log(`The signature ${u8aToHex(signature)}, is ${isValid ? '' : 'in'}valid`);
+
+
+
+
+    // Get the current sudo key in the system
+    const sudoKey = await this.api.query.sudo.key();
+    console.log('sudoKey', sudoKey)
+
+    // // Lookup from keyring (assuming we have added all, on --dev this would be `//Alice`)
+    // const sudoPair = this.keyring.getPair(sudoKey);
+    // console.log('sudoPair', sudoPair)
+
+    // // Send the actual sudo transaction
+    // const unsub = await this.api.tx.sudo
+    //   .sudo(
+    //     this.api.tx.balances.setBalance('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY', 12345000000, 678000000)
+    //   )
+    //   .signAndSend(sudoPair, (result) => {
+    //     console.log('result', result)
+    //    });
+
     // TODO
-    const controller = '5GNJqTPyNqANBkUVMN1LPPrxXnFouWXoe2wNSmmEoLctxiZY'; // alice, temp
     const title = 'proposal title';
     const contents = 'proposal contents';
     const outcomes = ['test'];
@@ -144,7 +186,8 @@ class SubstrateService {
     const tallyType = 0;
 
     const transfer = this.api.tx.signaling.createProposal(title, contents, outcomes, voteType, tallyType);
-    const txHash = await transfer.signAndSend(controller, ({ events = [], status, type }) => {
+    const unsubscribe = await transfer.signAndSend(alice, ({ events = [], status, type }) => {
+      console.log('signAndSend event', events, status, type)
       if (type === 'Finalised') {
         console.log('Successful transfer '  + ' with hash ' + status.asFinalised.toHex());
       } else {
@@ -154,8 +197,6 @@ class SubstrateService {
         console.log(phase.toString() + ' : ' + section + '.' + method + ' ' + data.toString());
       });
     });
-
-    console.log('Submitted with hash', txHash)
 
     // example log
     // makeExtrinsicCall: updated status :: {"events":[],"status":{"Ready":null}}
