@@ -8,6 +8,8 @@ import Box from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
+import substrateService from '../services/substrate';
+
 // pub enum VoteStage {
 // 	// Before voting stage, no votes accepted
 // 	PreVoting,
@@ -62,13 +64,19 @@ export default () => {
   // need to build proposal data for signalling.createProposal using sudo alice key
   // then we need to elevate proposal status with its hash
 
+  function handleCreateProposal(e) {
+    e.preventDefault();
+    console.log('createProposal values');
+    substrateService.createProposal();
+  }
+
   return (
     <Container maxWidth="md">
       <Typography variant="h5">
         Submit Proposal
       </Typography>
       <br />
-      <form noValidate>
+      <form noValidate onSubmit={handleCreateProposal}>
         <TextField
           name="title"
           label="Title"

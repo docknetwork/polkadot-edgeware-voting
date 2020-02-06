@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 
 import { IdentityTypes } from 'edgeware-node-types/dist/identity';
 import { VotingTypes } from 'edgeware-node-types/dist/voting';
+import { SignalingTypes } from 'edgeware-node-types/dist/signaling';
 import { Balance2, TreasuryRewardTypes } from 'edgeware-node-types/dist/treasuryReward';
 
 export const nodeAddress = 'ws://127.0.0.1:9944';
@@ -39,10 +40,16 @@ class SubstrateService {
       types: {
         ...IdentityTypes,
         ...VotingTypes,
+        ...SignalingTypes,
         ...TreasuryRewardTypes,
         ...Balance2,
       }
     });
+
+    console.log('IdentityTypes', IdentityTypes)
+    console.log('VotingTypes', VotingTypes)
+    console.log('TreasuryRewardTypes', TreasuryRewardTypes)
+    console.log('Balance2', Balance2)
 
     // Retrieve the chain & node information information via rpc calls
     const [chain, nodeName, nodeVersion] = await Promise.all([
@@ -82,7 +89,7 @@ class SubstrateService {
 
 
     console.log('this.api', this.api)
-    console.log('this.api.tx', this.api.tx)
+    console.log('this.api.tx.signaling', this.api.tx.signaling)
         console.log('test democracy', this.api.tx.democracy)
 
     this.state.connected = true;
@@ -129,6 +136,32 @@ class SubstrateService {
       console.log(`inactive proposals`, proposals);
       console.log(proposals.toString());
     });
+  }
+
+  createProposal() {
+    // TODO
+    const controller = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'; // alice, temp
+    const title = 'proposal title';
+    const contents = 'proposal contents';
+    const outcomes = ['test'];
+    const voteType = 0;
+    const tallyType = 0;
+
+    const transfer = this.api.tx.signaling.createProposal(title, contents, outcomes, voteType, tallyType);
+    transfer.signAndSend(controller, ({ events = [], status, type }) => {
+      if (type === 'Finalised') {
+        console.log('Successful transfer '  + ' with hash ' + status.asFinalised.toHex());
+      } else {
+        console.log('Status of transfer: ' + type);
+      }
+      events.forEach(({ phase, event: { data, method, section } }) => {
+        console.log(phase.toString() + ' : ' + section + '.' + method + ' ' + data.toString());
+      });
+    });
+
+    // example log
+    // makeExtrinsicCall: updated status :: {"events":[],"status":{"Ready":null}}
+    // makeExtrinsicCall: updated status :: {"events":[{"phase":{"ApplyExtrinsic":1},"event":{"index":"0x0c00","data":[false]},"topics":[]},{"phase":{"ApplyExtrinsic":1},"event":{"index":"0x0000","data":[{"weight":0,"class":"operational","paysFee":false}]},"topics":[]}],"status":{"Finalized":"0xf22afbb7f121d3365166dc827cb94551d28232f6146015e50547870a6aaa5523"}}
   }
 
   async subscribeNewHeads(callback) {
