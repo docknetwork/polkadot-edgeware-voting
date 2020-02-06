@@ -112,33 +112,41 @@ class SubstrateService {
     });
   }
 
-  async getProposals(callback) {
+  formatProposalList(proposals) {
+    const result = [];
+    proposals.forEach(proposal => {
+      // TODO: load proposal data
+
+      result.push({
+        hash: proposal.toHex()
+      });
+    });
+    return result;
+  }
+
+  async getActiveProposals(callback) {
     if (!this.state.connected) {
       return this.connect()
-        .then(() => this.getProposals(callback));
+        .then(() => this.getActiveProposals(callback));
     }
 
-
-
-  // TODO: turns out this is for subsrate democracy, we need to redo it for edgeware
-  // once we are able to submit proposals through UI
-  // see: https://polkadot.js.org/api/substrate/storage.html
-  // The following sections contain Storage methods are part of the default Substrate runtime. On the api, these are exposed via api.query.<module>.<method>.
-  // https://polkadot.js.org/apps/#/chainstate
-
-
     this.api.query.signaling.activeProposals((proposals) => {
-      console.log(`active proposals`, proposals);
-      console.log(proposals.toString());
-    });
-
-    this.api.query.signaling.inactiveProposals((proposals) => {
-      console.log(`inactive proposals`, proposals);
-      console.log(proposals.toString());
+      callback(this.formatProposalList(proposals.toArray()));
     });
   }
 
-  async createProposal() {
+  async getInactiveProposals(callback) {
+    if (!this.state.connected) {
+      return this.connect()
+        .then(() => this.getInactiveProposals(callback));
+    }
+
+    this.api.query.signaling.inactiveProposals((proposals) => {
+      callback(this.formatProposalList(proposals.toArray()));
+    });
+  }
+
+  async createProposal(title, contents, outcomes, voteType, tallyType) {
     if (!this.state.connected) {
       return this.connect()
         .then(() => this.createProposal());
@@ -147,49 +155,7 @@ class SubstrateService {
     // (Advanced, development-only) add with an implied dev seed and hard derivation
     const alice = this.keyring.addFromUri('//Alice', { name: 'Alice' });
     console.log(`${alice.meta.name}: has address ${alice.address} with publicKey [${alice.publicKey}]`);
-    console.log('pairs', this.keyring.getPairs())
-
-
-    // // Convert message, sign and then verify
-    // const message = stringToU8a('this is our message');
-    // const signature = alice.sign(message);
-    // const isValid = alice.verify(message, signature);
-    //
-    // // Log info
-    // console.log(`The signature ${u8aToHex(signature)}, is ${isValid ? '' : 'in'}valid`);
-
-
-
-
-    // // Get the current sudo key in the system
-    // const sudoKey = await this.api.query.sudo.key();
-    // console.log('sudoKey', sudoKey)
-
-    // // Lookup from keyring (assuming we have added all, on --dev this would be `//Alice`)
-    // const sudoPair = this.keyring.getPair(sudoKey);
-    // console.log('sudoPair', sudoPair)
-
-    // // Send the actual sudo transaction
-    // const unsub = await this.api.tx.sudo
-    //   .sudo(
-    //     this.api.tx.balances.setBalance('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY', 12345000000, 678000000)
-    //   )
-    //   .signAndSend(sudoPair, (result) => {
-    //     console.log('result', result)
-    //    });
-
-    // TODO
-    const title = 'proposal title';
-    const contents = 'proposal contents';
-
-    const YES_VOTE = new Uint8Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1]);
-    const NO_VOTE = new Uint8Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);
-
-    const outcomes = [YES_VOTE, NO_VOTE]; // fixed size 32 length array of u8
-    // const voteType = 'binary';
-    // const tallyType = 'oneperson';
-    const voteType = 0; // VoteType::Binary, TallyType::OneCoin
-    const tallyType = 0;
+    // console.log('pairs', this.keyring.getPairs())
 
     const transfer = this.api.tx.signaling.createProposal(title, contents, outcomes, voteType, tallyType);
     const unsub = await transfer.signAndSend(alice, ({ events = [], status }) => {

@@ -13,39 +13,21 @@ import CardContent from '@material-ui/core/CardContent';
 import substrateService from '../services/substrate';
 
 const Proposal = ({proposal}) => {
-  const { balance, hash, index, proposer, seconds } = proposal;
-  const seconding = seconds.filter((_address, index) => index !== 0);
   return (
     <Card>
       <CardContent>
         <Typography variant="h6" color="textSecondary" gutterBottom>
-          balance: {`${balance}`}
+          {`${proposal.hash}`}
         </Typography>
         <Typography variant="h5" component="h2">
-          hash: {`${hash}`}
+          title
         </Typography>
         <Typography color="textSecondary">
-          index: {`${index}`}
+          test 1
         </Typography>
         <Typography color="textSecondary">
-          proposer: {`${proposer}`}
+          test 2
         </Typography>
-        <br />
-        {seconding.length !== 0 && (
-          <>
-            <Typography variant="h6">
-              {`Seconds (${seconding.length})`}
-            </Typography>
-            <br />
-            {seconding.map((address, count) => (
-              <Typography color="textSecondary">
-                count: {`${count}`}
-                <br />
-                address: {`${address}`}
-              </Typography>
-            ))}
-          </>
-        )}
       </CardContent>
     </Card>
   );
@@ -53,17 +35,14 @@ const Proposal = ({proposal}) => {
 
 export default () => {
   const [proposals, setProposals] = useState([]);
+  const [inactiveProposals, setInactiveProposals] = useState([]);
   const [proposalCount, setProposalCount] = useState(-1);
 
   useEffect(() => {
     if (proposalCount === -1) {
-      setProposalCount(proposals.length);
-      substrateService.getProposals(list => {
-        list.forEach(proposal => {
-          proposals.push(proposal);
-          setProposalCount(proposals.length);
-        });
-      });
+      setProposalCount(0);
+      substrateService.getActiveProposals(setProposals);
+      substrateService.getInactiveProposals(setInactiveProposals);
     }
   }, [proposals]);
 
@@ -71,10 +50,20 @@ export default () => {
   return (
     <Container maxWidth="md">
       <Typography variant="h5">
-        Proposals ({proposals.length})
+        Active Proposals ({proposals.length})
       </Typography>
       <br />
       {proposals.map((proposal, index) => (
+        <Proposal key={index} {...{proposal}} />
+      ))}
+
+      <br /><br />
+
+      <Typography variant="h5">
+        Inactive Proposals ({inactiveProposals.length})
+      </Typography>
+      <br />
+      {inactiveProposals.map((proposal, index) => (
         <Proposal key={index} {...{proposal}} />
       ))}
     </Container>
