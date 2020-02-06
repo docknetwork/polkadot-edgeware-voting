@@ -46,11 +46,6 @@ class SubstrateService {
       }
     });
 
-    console.log('IdentityTypes', IdentityTypes)
-    console.log('VotingTypes', VotingTypes)
-    console.log('TreasuryRewardTypes', TreasuryRewardTypes)
-    console.log('Balance2', Balance2)
-
     // Retrieve the chain & node information information via rpc calls
     const [chain, nodeName, nodeVersion] = await Promise.all([
       this.api.rpc.system.chain(),
@@ -87,10 +82,6 @@ class SubstrateService {
 // noteImminentPreimage: (...params) => creator(method(...params))
 // reapPreimage: (...params) => creator(method(...params))
 
-
-    console.log('this.api', this.api)
-    console.log('this.api.tx.signaling', this.api.tx.signaling)
-        console.log('test democracy', this.api.tx.democracy)
 
     this.state.connected = true;
     this.state.connecting = false;
@@ -138,9 +129,14 @@ class SubstrateService {
     });
   }
 
-  createProposal() {
+  async createProposal() {
+    if (!this.state.connected) {
+      return this.connect()
+        .then(() => this.createProposal());
+    }
+
     // TODO
-    const controller = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'; // alice, temp
+    const controller = '5GNJqTPyNqANBkUVMN1LPPrxXnFouWXoe2wNSmmEoLctxiZY'; // alice, temp
     const title = 'proposal title';
     const contents = 'proposal contents';
     const outcomes = ['test'];
@@ -148,7 +144,7 @@ class SubstrateService {
     const tallyType = 0;
 
     const transfer = this.api.tx.signaling.createProposal(title, contents, outcomes, voteType, tallyType);
-    transfer.signAndSend(controller, ({ events = [], status, type }) => {
+    const txHash = await transfer.signAndSend(controller, ({ events = [], status, type }) => {
       if (type === 'Finalised') {
         console.log('Successful transfer '  + ' with hash ' + status.asFinalised.toHex());
       } else {
@@ -158,6 +154,8 @@ class SubstrateService {
         console.log(phase.toString() + ' : ' + section + '.' + method + ' ' + data.toString());
       });
     });
+
+    console.log('Submitted with hash', txHash)
 
     // example log
     // makeExtrinsicCall: updated status :: {"events":[],"status":{"Ready":null}}
