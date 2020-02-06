@@ -150,20 +150,20 @@ class SubstrateService {
     console.log('pairs', this.keyring.getPairs())
 
 
-    // Convert message, sign and then verify
-    const message = stringToU8a('this is our message');
-    const signature = alice.sign(message);
-    const isValid = alice.verify(message, signature);
-
-    // Log info
-    console.log(`The signature ${u8aToHex(signature)}, is ${isValid ? '' : 'in'}valid`);
-
-
+    // // Convert message, sign and then verify
+    // const message = stringToU8a('this is our message');
+    // const signature = alice.sign(message);
+    // const isValid = alice.verify(message, signature);
+    //
+    // // Log info
+    // console.log(`The signature ${u8aToHex(signature)}, is ${isValid ? '' : 'in'}valid`);
 
 
-    // Get the current sudo key in the system
-    const sudoKey = await this.api.query.sudo.key();
-    console.log('sudoKey', sudoKey)
+
+
+    // // Get the current sudo key in the system
+    // const sudoKey = await this.api.query.sudo.key();
+    // console.log('sudoKey', sudoKey)
 
     // // Lookup from keyring (assuming we have added all, on --dev this would be `//Alice`)
     // const sudoPair = this.keyring.getPair(sudoKey);
@@ -181,21 +181,30 @@ class SubstrateService {
     // TODO
     const title = 'proposal title';
     const contents = 'proposal contents';
-    const outcomes = new Uint8Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1]); // fixed size 32 length array of u8
-    const voteType = 'binary';
-    const tallyType = 'oneperson';
+
+    const YES_VOTE = new Uint8Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1]);
+    const NO_VOTE = new Uint8Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);
+
+    const outcomes = [YES_VOTE, NO_VOTE]; // fixed size 32 length array of u8
+    // const voteType = 'binary';
+    // const tallyType = 'oneperson';
+    const voteType = 0; // VoteType::Binary, TallyType::OneCoin
+    const tallyType = 0;
 
     const transfer = this.api.tx.signaling.createProposal(title, contents, outcomes, voteType, tallyType);
-    const unsubscribe = await transfer.signAndSend(alice, ({ events = [], status, type }) => {
-      console.log('signAndSend event', events, status, type)
-      if (type === 'Finalised') {
-        console.log('Successful transfer '  + ' with hash ' + status.asFinalised.toHex());
-      } else {
-        console.log('Status of transfer: ' + type);
+    const unsub = await transfer.signAndSend(alice, ({ events = [], status }) => {
+      console.log(`Current status is ${status.type}`);
+
+      if (status.isFinalized) {
+        console.log(`Transaction included at blockHash ${status.asFinalized}`);
+
+        // Loop through Vec<EventRecord> to display all events
+        events.forEach(({ phase, event: { data, method, section } }) => {
+          console.log(`\t' ${phase}: ${section}.${method}:: ${data}`);
+        });
+
+        unsub();
       }
-      events.forEach(({ phase, event: { data, method, section } }) => {
-        console.log(phase.toString() + ' : ' + section + '.' + method + ' ' + data.toString());
-      });
     });
 
     // example log
