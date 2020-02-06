@@ -24,7 +24,6 @@ const useStyles = makeStyles({
 const Block = ({block}) => {
   const classes = useStyles();
   const hashHex = 'TODO: get hash';
-  console.log(`Block`, block);
   return (
     <CustomCard className={classes.card}>
       <CardContent>
@@ -93,7 +92,6 @@ const Index = () => {
     substrateService.getEvents(record => {
       events.push(record);
       setEventCount(events.length);
-      console.log('record', record);
     });
   }
 

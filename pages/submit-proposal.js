@@ -10,54 +10,6 @@ import Typography from '@material-ui/core/Typography';
 
 import substrateService from '../services/substrate';
 
-// pub enum VoteStage {
-// 	// Before voting stage, no votes accepted
-// 	PreVoting,
-// 	// Commit stage, only for commit-reveal-type elections
-// 	Commit,
-// 	// Active voting stage, votes (reveals) allowed
-// 	Voting,
-// 	// Completed voting stage, no more votes allowed
-// 	Completed,
-// }
-
-// pub struct VoteData<AccountId> {
-// 	// creator of vote
-// 	pub initiator: AccountId,
-// 	// Stage of the vote
-// 	pub stage: VoteStage,
-// 	// Type of vote defined abovoe
-// 	pub vote_type: VoteType,
-// 	// Tally metric
-// 	pub tally_type: TallyType,
-// 	// Flag for commit/reveal voting scheme
-// 	pub is_commit_reveal: bool,
-// }
-
-// pub enum VoteType {
-// 	// Binary decision vote, i.e. 2 outcomes
-// 	Binary,
-// 	// Multi option decision vote, i.e. > 2 possible outcomes
-// 	MultiOption,
-// 	// Ranked choice voting
-// 	RankedChoice,
-// }
-
-// pub struct VoteRecord<AccountId> {
-// 	// Identifier of the vote
-// 	pub id: u64,
-// 	// Vote commitments
-// 	pub commitments: Vec<(AccountId, VoteOutcome)>,
-// 	// Vote reveals
-// 	pub reveals: Vec<(AccountId, Vec<VoteOutcome>)>,
-// 	// Vote data record
-// 	pub data: VoteData<AccountId>,
-// 	// Vote outcomes
-// 	pub outcomes: Vec<VoteOutcome>,
-// }
-
-
-
 export default () => {
   // NOTES:
   // to submit a proposal we need to submit an extrinsic (see https://polkadot.js.org/apps/#/extrinsics connected to same node)
@@ -66,7 +18,6 @@ export default () => {
 
   function handleCreateProposal(e) {
     e.preventDefault();
-    console.log('createProposal values');
     substrateService.createProposal();
   }
 
