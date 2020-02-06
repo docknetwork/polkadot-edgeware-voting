@@ -18,7 +18,21 @@ export default () => {
 
   function handleCreateProposal(e) {
     e.preventDefault();
-    substrateService.createProposal();
+
+    const title = 'My Proposal';
+    const contents = JSON.stringify({
+      description: 'test'
+    });
+
+    // fixed size 32 length array of u8
+    const YES_VOTE = new Uint8Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1]);
+    const NO_VOTE = new Uint8Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);
+
+    const outcomes = [YES_VOTE, NO_VOTE];
+    const voteType = 0; // Binary, MultiOption, RankedChoice
+    const tallyType = 0; // OnePerson, OneCoin
+
+    substrateService.createProposal(title, contents, outcomes, voteType, tallyType);
   }
 
   return (
