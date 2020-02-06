@@ -19,15 +19,25 @@ const Proposal = ({proposal}) => {
         <Typography variant="h6" color="textSecondary" gutterBottom>
           {`${proposal.hash}`}
         </Typography>
-        <Typography variant="h5" component="h2">
-          title
-        </Typography>
-        <Typography color="textSecondary">
-          test 1
-        </Typography>
-        <Typography color="textSecondary">
-          test 2
-        </Typography>
+        {proposal.data && (
+          <>
+            <Typography variant="h5" component="h2">
+              {`${proposal.data.title}`}
+            </Typography>
+            <Typography color="textSecondary">
+              {`${proposal.data.contents}`}
+            </Typography>
+            <Typography color="textSecondary">
+              author: {`${proposal.data.author}`}
+            </Typography>
+            <Typography color="textSecondary">
+              stage: {JSON.stringify(proposal.data.stage)}
+            </Typography>
+            <Typography color="textSecondary">
+              index: {`${proposal.data.index}`}
+            </Typography>
+          </>
+        )}
       </CardContent>
     </Card>
   );

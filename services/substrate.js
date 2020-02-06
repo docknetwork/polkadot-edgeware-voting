@@ -112,14 +112,27 @@ class SubstrateService {
     });
   }
 
+  async getProposal(hash) {
+    return await this.api.query.signaling.proposalOf(hash);
+  }
+
   formatProposalList(proposals) {
     const result = [];
     proposals.forEach(proposal => {
-      // TODO: load proposal data
+      const baseData = proposal.toJSON();
+      const proposalData = {
+        hash: baseData[0],
+        number: baseData[1]
+      };
 
-      result.push({
-        hash: proposal.toHex()
-      });
+      // TODO: load proposal data
+      this.getProposal(baseData[0])
+        .then(data => {
+          proposalData.data = data.toJSON();
+          console.log('proposalData.data', proposalData.data)
+        });
+
+      result.push(proposalData);
     });
     return result;
   }
