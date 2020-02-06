@@ -181,9 +181,9 @@ class SubstrateService {
     // TODO
     const title = 'proposal title';
     const contents = 'proposal contents';
-    const outcomes = ['test'];
-    const voteType = 0;
-    const tallyType = 0;
+    const outcomes = new Uint8Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1]); // fixed size 32 length array of u8
+    const voteType = 'binary';
+    const tallyType = 'oneperson';
 
     const transfer = this.api.tx.signaling.createProposal(title, contents, outcomes, voteType, tallyType);
     const unsubscribe = await transfer.signAndSend(alice, ({ events = [], status, type }) => {
