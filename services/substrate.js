@@ -125,7 +125,6 @@ class SubstrateService {
         number: baseData[1]
       };
 
-      // TODO: load proposal data
       this.getProposal(baseData[0])
         .then(data => {
           proposalData.data = data.toJSON();
@@ -159,10 +158,33 @@ class SubstrateService {
     });
   }
 
+  async advanceProposal(hash) {
+    if (!this.state.connected) {
+      return this.connect()
+        .then(() => this.advanceProposal(hash));
+    }
+
+    const transfer = this.api.tx.signaling.advanceProposal(hash);
+    const unsub = await transfer.signAndSend(alice, ({ events = [], status }) => {
+      console.log(`Current status is ${status.type}`);
+
+      if (status.isFinalized) {
+        console.log(`Transaction included at blockHash ${status.asFinalized}`);
+
+        // Loop through Vec<EventRecord> to display all events
+        events.forEach(({ phase, event: { data, method, section } }) => {
+          console.log(`\t' ${phase}: ${section}.${method}:: ${data}`);
+        });
+
+        unsub();
+      }
+    });
+  }
+
   async createProposal(title, contents, outcomes, voteType, tallyType) {
     if (!this.state.connected) {
       return this.connect()
-        .then(() => this.createProposal());
+        .then(() => this.createProposal(title, contents, outcomes, voteType, tallyType));
     }
 
     // (Advanced, development-only) add with an implied dev seed and hard derivation
