@@ -10,4 +10,8 @@ Host: yarn start
 
 # starting the node
 
+download and compile latest edgeware release
 https://github.com/hicommonwealth/edgeware-node
+
+run in development mode:
+```./target/release/edgeware --base-path /tmp/alice --chain local --alice --port 30333 --ws-port 9944 --rpc-port 9933 --telemetry-url ws://telemetry.polkadot.io:1024 --validator --dev```
