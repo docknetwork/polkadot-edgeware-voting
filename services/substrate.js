@@ -34,7 +34,6 @@ class SubstrateService {
 
     // Initialise the provider to connect to the local node
     const provider = new WsProvider(nodeAddress);
-
     const keyring = new Keyring({ type: 'sr25519' });
     this.keyring = keyring;
 
@@ -52,45 +51,12 @@ class SubstrateService {
       }
     });
 
-    console.log('VotingTypes', VotingTypes)
-    console.log('SignalingTypes', SignalingTypes)
-
     // Retrieve the chain & node information information via rpc calls
     const [chain, nodeName, nodeVersion] = await Promise.all([
       this.api.rpc.system.chain(),
       this.api.rpc.system.name(),
       this.api.rpc.system.version()
     ]);
-
-  // api.derive.democracy...
-  // proposals: ƒ (...args)
-  // referendumInfos: ƒ (...args)
-  // referendums: ƒ (...args)
-  // referendumVotesFor: ƒ (...args)
-  // votes: ƒ (...args)
-
-// propose: (...params) => creator(method(...params))
-// second: (...params) => creator(method(...params))
-// vote: (...params) => creator(method(...params))
-// proxyVote: (...params) => creator(method(...params))
-// emergencyCancel: (...params) => creator(method(...params))
-// externalPropose: (...params) => creator(method(...params))
-// externalProposeMajority: (...params) => creator(method(...params))
-// externalProposeDefault: (...params) => creator(method(...params))
-// fastTrack: (...params) => creator(method(...params))
-// vetoExternal: (...params) => creator(method(...params))
-// cancelReferendum: (...params) => creator(method(...params))
-// cancelQueued: (...params) => creator(method(...params))
-// setProxy: (...params) => creator(method(...params))
-// resignProxy: (...params) => creator(method(...params))
-// removeProxy: (...params) => creator(method(...params))
-// delegate: (...params) => creator(method(...params))
-// undelegate: (...params) => creator(method(...params))
-// clearPublicProposals: (...params) => creator(method(...params))
-// notePreimage: (...params) => creator(method(...params))
-// noteImminentPreimage: (...params) => creator(method(...params))
-// reapPreimage: (...params) => creator(method(...params))
-
 
     this.state.connected = true;
     this.state.connecting = false;
@@ -113,11 +79,25 @@ class SubstrateService {
   }
 
   async getVoteRecords(index) {
-    return await this.api.query.voting.voteRecords(index);
+    if (!this.state.connected) {
+      return this.connect()
+        .then(() => this.getVoteRecords(index));
+    }
+
+    return this.api.query.voting.voteRecords(index);
   }
 
   async getProposal(hash) {
-    return await this.api.query.signaling.proposalOf(hash);
+    if (!hash) {
+      return;
+    }
+
+    if (!this.state.connected) {
+      return this.connect()
+        .then(() => this.getProposal(hash));
+    }
+
+    return this.api.query.signaling.proposalOf(hash);
   }
 
   formatProposalList(proposals) {
@@ -133,13 +113,7 @@ class SubstrateService {
       this.getProposal(baseData[0])
         .then(data => {
           proposalData.data = data.toJSON();
-         console.log('proposalData.data', proposalData.data)
-
-          // TODO: check if stage === voting before loading the records
-          this.getVoteRecords(proposalData.data.index)
-            .then(data => {
-              console.log('getVoteRecords', data.toJSON())
-            });
+          console.log('proposalData.data', proposalData.data)
         });
 
       result.push(proposalData);

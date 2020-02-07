@@ -15,13 +15,51 @@ import substrateService from '../../services/substrate';
 
 const Proposal = () => {
   const router = useRouter();
-  const [isConnecting, setIsConnecting] = useState(false);
+  const hash = router.query.id;
+  const [proposal, setProposal] = useState();
+  const [voteRecords, setVoteRecords] = useState();
 
-  return (
-    <Grid container spacing={3}>
-      hello world {router.query.id}
-    </Grid>
-  );
+  async function loadProposal() {
+    console.log('loadProposal', hash)
+    const data = await substrateService.getProposal(hash);
+    setProposal(data.toJSON());
+    console.log('setProposal', data.toJSON())
+    const voteRecords = await substrateService.getVoteRecords(data.toJSON().index);
+    setVoteRecords(voteRecords.toJSON());
+    console.log('voteRecords', voteRecords.toJSON())
+  }
+
+  useEffect(() => {
+    if (!proposal && hash) {
+      loadProposal();
+    }
+  }, [proposal]);
+
+  if (proposal) {
+    const contents = JSON.parse(proposal.contents);
+
+    return (
+      <Container maxWidth="md">
+        <Typography variant="h4">
+          {proposal.title}
+        </Typography>
+        <br />
+        <Card>
+          <CardContent>
+            <Typography variant="h6" color="textSecondary" gutterBottom>
+              {contents.description}
+            </Typography>
+          </CardContent>
+        </Card>
+      </Container>
+    );
+  } else {
+    return (
+      <Typography variant="h4">
+        Loading...
+      </Typography>
+    );
+  }
 };
 
 export default Proposal;
