@@ -164,6 +164,7 @@ class SubstrateService {
         .then(() => this.advanceProposal(hash));
     }
 
+    const alice = this.keyring.addFromUri('//Alice', { name: 'Alice' });
     const transfer = this.api.tx.signaling.advanceProposal(hash);
     const unsub = await transfer.signAndSend(alice, ({ events = [], status }) => {
       console.log(`Current status is ${status.type}`);

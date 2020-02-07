@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components';
 import TextField from '@material-ui/core/TextField';
 import Container from '@material-ui/core/Container';
@@ -11,10 +11,15 @@ import Typography from '@material-ui/core/Typography';
 import substrateService from '../services/substrate';
 
 export default () => {
-  // NOTES:
-  // to submit a proposal we need to submit an extrinsic (see https://polkadot.js.org/apps/#/extrinsics connected to same node)
-  // need to build proposal data for signalling.createProposal using sudo alice key
-  // then we need to elevate proposal status with its hash
+  const [hash, setHash] = useState();
+  const handleHashChange = event => {
+    setHash(event.target.value);
+  };
+
+  function handleAdvanceProposal(e) {
+    e.preventDefault();
+    substrateService.advanceProposal(hash);
+  }
 
   function handleCreateProposal(e) {
     e.preventDefault();
@@ -54,6 +59,28 @@ export default () => {
           variant="outlined"
           fullWidth
           multiline />
+        <br /><br />
+        <Button
+          variant="contained"
+          color="primary"
+          type="submit"
+          >
+          Submit
+        </Button>
+      </form>
+
+      <br /><br />
+      <Typography variant="h5">
+        Advance Proposal
+      </Typography>
+      <br />
+      <form noValidate onSubmit={handleAdvanceProposal}>
+        <TextField
+          name="hash"
+          label="Proposal Hash"
+          variant="outlined"
+          onChange={handleHashChange}
+          fullWidth />
         <br /><br />
         <Button
           variant="contained"
