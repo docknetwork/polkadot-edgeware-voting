@@ -20,7 +20,6 @@ const Proposal = () => {
   const [voteRecords, setVoteRecords] = useState();
 
   async function loadProposal() {
-    console.log('loadProposal', hash)
     const data = await substrateService.getProposal(hash);
     setProposal(data.toJSON());
     console.log('setProposal', data.toJSON())
@@ -35,6 +34,8 @@ const Proposal = () => {
     }
   }, [proposal]);
 
+  // TODO: list otucomes, allow to select them, then on submit vote call extrinsic voting.commit or voting.reveal with hash of vote outcome
+
   if (proposal) {
     const contents = JSON.parse(proposal.contents);
 
@@ -46,8 +47,21 @@ const Proposal = () => {
         <br />
         <Card>
           <CardContent>
-            <Typography variant="h6" color="textSecondary" gutterBottom>
+            <Typography variant="h5">
               {contents.description}
+            </Typography>
+            <br />
+            <Typography variant="h6" color="textSecondary" gutterBottom>
+              Hash: {hash}
+            </Typography>
+            <Typography variant="h6" color="textSecondary" gutterBottom>
+              Commitments: {voteRecords ? voteRecords.commitments.length : 0}
+            </Typography>
+            <Typography variant="h6" color="textSecondary" gutterBottom>
+              Reveals: {voteRecords ? voteRecords.reveals.length : 0}
+            </Typography>
+            <Typography variant="h6" color="textSecondary" gutterBottom>
+              Outcomes: {voteRecords ? voteRecords.outcomes.length : 0}
             </Typography>
           </CardContent>
         </Card>
