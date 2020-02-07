@@ -46,6 +46,7 @@ const Proposal = ({proposal}) => {
 export default () => {
   const [proposals, setProposals] = useState([]);
   const [inactiveProposals, setInactiveProposals] = useState([]);
+  const [completedProposals, setCompletedProposals] = useState([]);
   const [proposalCount, setProposalCount] = useState(-1);
 
   useEffect(() => {
@@ -53,6 +54,7 @@ export default () => {
       setProposalCount(0);
       substrateService.getActiveProposals(setProposals);
       substrateService.getInactiveProposals(setInactiveProposals);
+      // substrateService.getCompletedProposals(setCompletedProposals);
     }
   }, [proposals]);
 
@@ -74,6 +76,16 @@ export default () => {
       </Typography>
       <br />
       {inactiveProposals.map((proposal, index) => (
+        <Proposal key={index} {...{proposal}} />
+      ))}
+
+      <br /><br />
+
+      <Typography variant="h5">
+        Completed Proposals ({completedProposals.length})
+      </Typography>
+      <br />
+      {completedProposals.map((proposal, index) => (
         <Proposal key={index} {...{proposal}} />
       ))}
     </Container>

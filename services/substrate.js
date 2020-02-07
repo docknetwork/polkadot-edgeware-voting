@@ -147,6 +147,17 @@ class SubstrateService {
     });
   }
 
+  async getCompletedProposals(callback) {
+    if (!this.state.connected) {
+      return this.connect()
+        .then(() => this.getCompletedProposals(callback));
+    }
+
+    this.api.query.signaling.completedProposals((proposals) => {
+      callback(this.formatProposalList(proposals.toArray()));
+    });
+  }
+
   async getInactiveProposals(callback) {
     if (!this.state.connected) {
       return this.connect()
