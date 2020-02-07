@@ -112,6 +112,10 @@ class SubstrateService {
     });
   }
 
+  async getVoteRecords(index) {
+    return await this.api.query.voting.voteRecords(index);
+  }
+
   async getProposal(hash) {
     return await this.api.query.signaling.proposalOf(hash);
   }
@@ -125,10 +129,17 @@ class SubstrateService {
         number: baseData[1]
       };
 
+
       this.getProposal(baseData[0])
         .then(data => {
           proposalData.data = data.toJSON();
-          console.log('proposalData.data', proposalData.data)
+         console.log('proposalData.data', proposalData.data)
+
+          // TODO: check if stage === voting before loading the records
+          this.getVoteRecords(proposalData.data.index)
+            .then(data => {
+              console.log('getVoteRecords', data.toJSON())
+            });
         });
 
       result.push(proposalData);

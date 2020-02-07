@@ -65,6 +65,7 @@ export default () => {
       description: state.description
     });
 
+    console.log('state', state)
     substrateService.createProposal(state.title, contents, outcomes, state.voteType, state.tallyType);
   }
 
