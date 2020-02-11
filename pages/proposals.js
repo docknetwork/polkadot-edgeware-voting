@@ -57,9 +57,13 @@ export default () => {
   useEffect(() => {
     if (proposalCount === -1) {
       setProposalCount(0);
-      substrateService.getActiveProposals(setProposals);
-      substrateService.getInactiveProposals(setInactiveProposals);
-      // substrateService.getCompletedProposals(setCompletedProposals);
+      substrateService.getActiveProposals(value => {
+        setProposals(value);
+        substrateService.getInactiveProposals(value => {
+          setInactiveProposals(value);
+          substrateService.getCompletedProposals(setCompletedProposals);
+        });
+      });
     }
   }, [proposals]);
 
