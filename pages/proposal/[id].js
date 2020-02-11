@@ -24,15 +24,37 @@ const Proposal = () => {
   const hash = router.query.id;
   const [proposal, setProposal] = useState();
   const [voteRecords, setVoteRecords] = useState();
-  const [vote, setVote] = React.useState('female');
+  const [results, setResults] = useState();
+  const [vote, setVote] = useState('');
 
   async function loadProposal() {
     const data = await substrateService.getProposal(hash);
     setProposal(data.toJSON());
-    console.log('setProposal', data.toJSON())
     const voteRecords = await substrateService.getVoteRecords(data.toJSON().index);
-    setVoteRecords(voteRecords.toJSON());
-    console.log('voteRecords', voteRecords.toJSON())
+    const voteData = voteRecords.toJSON();
+    setVoteRecords(voteData);
+    console.log('setProposal', data.toJSON())
+    console.log('voteRecords', voteData);
+
+    const voteResults = {};
+    const revealsCount = voteData.reveals.length;
+    for (let i = 0; i < revealsCount; i++) {
+      const reveal = voteData.reveals[i];
+      const voterAddress = reveal[0];
+      const votedOptions = reveal[1];
+
+      for (let c = 0; c < votedOptions.length; c++) {
+        const option = votedOptions[c];
+        if (voteResults[option]) {
+          voteResults[option]++;
+        } else {
+          voteResults[option] = 1;
+        }
+      }
+    }
+
+    console.log('voteResults', voteResults)
+    setResults(voteResults);
   }
 
   const handleVoteChange = event => {
@@ -95,7 +117,7 @@ const Proposal = () => {
                   <FormLabel component="legend">Your Vote</FormLabel>
                   <RadioGroup aria-label="vote" name="vote" value={vote} onChange={handleVoteChange}>
                     {voteRecords.outcomes.map((outcome, index) => (
-                      <FormControlLabel key={index} value={outcome} control={<Radio />} label={outcome} />
+                      <FormControlLabel key={index} value={outcome} control={<Radio />} label={`${outcome} - ${results ? results[outcome] : 0}/${voteRecords ? voteRecords.reveals.length : 0} votes`} />
                     ))}
                   </RadioGroup>
                 </FormControl>
