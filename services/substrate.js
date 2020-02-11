@@ -109,11 +109,9 @@ class SubstrateService {
         number: baseData[1]
       };
 
-
       this.getProposal(baseData[0])
         .then(data => {
           proposalData.data = data.toJSON();
-          console.log('proposalData.data', proposalData.data)
         });
 
       result.push(proposalData);
@@ -169,11 +167,6 @@ class SubstrateService {
         .then(() => this.createProposal(title, contents, outcomes, voteType, tallyType));
     }
 
-    // (Advanced, development-only) add with an implied dev seed and hard derivation
-    const alice = this.keyring.addFromUri('//Alice', { name: 'Alice' });
-    console.log(`${alice.meta.name}: has address ${alice.address} with publicKey [${alice.publicKey}]`);
-    // console.log('pairs', this.keyring.getPairs())
-
     return this.signAndSend(this.api.tx.signaling.createProposal(title, contents, outcomes, voteType, tallyType));
   }
 
@@ -187,15 +180,25 @@ class SubstrateService {
     return await this.api.rpc.chain.subscribeNewHeads(callback);
   }
 
-  async vote(id, outcome) {
+  async vote(id, outcome, isCommitReveal) {
     const resultOutcome = new Uint8Array(outcome.substr(2, outcome.length).match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
-    console.log('vote', id,outcome, resultOutcome)
-    return this.signAndSend(this.api.tx.voting.commit(id, resultOutcome));
+    console.log('vote', id,outcome, resultOutcome, 'isCommitReveal', isCommitReveal)
+    if (isCommitReveal) {
+      // not supported properly yet
+      return this.signAndSend(this.api.tx.voting.commit(id, resultOutcome));
+    } else {
+      // general purpose vote
+      const options = [resultOutcome]; // TODO: support multiple options
+      return this.signAndSend(this.api.tx.voting.reveal(id, options, null));
+    }
   }
 
   async signAndSend(transfer) {
     // TODO: allow to set custom accounts
-    const alice = this.keyring.addFromUri('//Alice', { name: 'Alice' });
+    // console.log('pairs', this.keyring.getPairs())
+    const alice = this.keyring.addFromUri('//Alice', { name: 'Alice' }); // dev only, of course
+    console.log(`${alice.meta.name}: has address ${alice.address} with publicKey [${alice.publicKey}]`);
+
     const unsub = await transfer.signAndSend(alice, ({ events = [], status }) => {
       console.log(`Current status is ${status.type}`);
 
