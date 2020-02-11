@@ -178,7 +178,7 @@ class SubstrateService {
     });
   }
 
-  async createProposal(title, contents, outcomes, voteType, tallyType) {
+  async createProposal({ title, contents, outcomes, voteType, tallyType }) {
     if (!this.state.connected) {
       return this.connect()
         .then(() => this.createProposal(title, contents, outcomes, voteType, tallyType));
