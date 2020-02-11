@@ -20,12 +20,11 @@ import substrateService from '../services/substrate';
 const voteTypes = [
   'Binary',
   'MultiOption',
-  'RankedChoice'
 ];
 
 const tallyTypes = [
   'OnePerson',
-  'OneCoin'
+  'OneCoin',
 ];
 
 export default () => {
