@@ -60,6 +60,18 @@ const Proposal = () => {
     setVote(event.target.value);
   };
 
+  function hexToAscii(str) {
+  	const hex = str.toString().substr(2, str.length);
+  	let str = '';
+  	for (var n = 0; n < hex.length; n += 2) {
+      const intInput = parseInt(hex.substr(n, 2), 16);
+      if (intInput !== 0) {
+    		str += String.fromCharCode(intInput);
+      }
+  	}
+  	return str;
+  }
+
   function handleVote() {
     substrateService.vote(voteRecords.id, vote);
   }
@@ -114,7 +126,7 @@ const Proposal = () => {
                   <FormLabel component="legend">Your Vote</FormLabel>
                   <RadioGroup aria-label="vote" name="vote" value={vote} onChange={handleVoteChange}>
                     {voteRecords.outcomes.map((outcome, index) => (
-                      <FormControlLabel key={index} value={outcome} control={<Radio />} label={`${outcome} - ${results ? (results[outcome] || 0) : 0}/${voteRecords ? voteRecords.reveals.length : 0} votes`} />
+                      <FormControlLabel key={index} value={outcome} control={<Radio />} label={`${hexToAscii(outcome)} - ${results ? (results[outcome] || 0) : 0}/${voteRecords ? voteRecords.reveals.length : 0} votes`} />
                     ))}
                   </RadioGroup>
                 </FormControl>
