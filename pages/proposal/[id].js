@@ -67,17 +67,30 @@ const Proposal = () => {
             <Typography variant="h6" color="textSecondary" gutterBottom>
               Hash: {hash}
             </Typography>
-            <Typography variant="h6" color="textSecondary" gutterBottom>
-              Commitments: {voteRecords ? voteRecords.commitments.length : 0}
-            </Typography>
-            <Typography variant="h6" color="textSecondary" gutterBottom>
-              Reveals: {voteRecords ? voteRecords.reveals.length : 0}
-            </Typography>
-
-            <br /><br />
 
             {voteRecords && (
               <>
+                <Typography variant="h6" color="textSecondary" gutterBottom>
+                  Commitments: {voteRecords ? voteRecords.commitments.length : 0}
+                </Typography>
+                <Typography variant="h6" color="textSecondary" gutterBottom>
+                  Reveals: {voteRecords ? voteRecords.reveals.length : 0}
+                </Typography>
+                <Typography variant="h6" color="textSecondary" gutterBottom>
+                  Reveals: {voteRecords ? voteRecords.reveals.length : 0}
+                </Typography>
+                <Typography variant="h6" color="textSecondary" gutterBottom>
+                  Vote Type: {voteRecords.data.vote_type.binary === null ? 'Binary' : 'MultiOption'}
+                </Typography>
+                <Typography variant="h6" color="textSecondary" gutterBottom>
+                  Tally Type: {voteRecords.data.tally_type.oneperson === null ? 'OnePerson' : 'OneCoin'}
+                </Typography>
+                <Typography variant="h6" color="textSecondary" gutterBottom>
+                  isCommitReveal: {voteRecords.data.is_commit_reveal ? 'true' : 'false'}
+                </Typography>
+
+                <br /><br />
+
                 <FormControl component="fieldset">
                   <FormLabel component="legend">Your Vote</FormLabel>
                   <RadioGroup aria-label="vote" name="vote" value={vote} onChange={handleVoteChange}>
