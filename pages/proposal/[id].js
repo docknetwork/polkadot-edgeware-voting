@@ -62,14 +62,14 @@ const Proposal = () => {
 
   function hexToAscii(str) {
   	const hex = str.toString().substr(2, str.length);
-  	let str = '';
+  	let result = '';
   	for (var n = 0; n < hex.length; n += 2) {
       const intInput = parseInt(hex.substr(n, 2), 16);
       if (intInput !== 0) {
-    		str += String.fromCharCode(intInput);
+    		result += String.fromCharCode(intInput);
       }
   	}
-  	return str;
+  	return result;
   }
 
   function handleVote() {
