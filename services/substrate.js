@@ -174,30 +174,7 @@ class SubstrateService {
     console.log(`${alice.meta.name}: has address ${alice.address} with publicKey [${alice.publicKey}]`);
     // console.log('pairs', this.keyring.getPairs())
 
-    const transfer = this.api.tx.signaling.createProposal(title, contents, outcomes, voteType, tallyType);
-    const unsub = await transfer.signAndSend(alice, ({ events = [], status }) => {
-      console.log(`Current status is ${status.type}`);
-
-      if (status.isFinalized) {
-        console.log(`Transaction included at blockHash ${status.asFinalized}`);
-
-        // Loop through Vec<EventRecord> to display all events
-        events.forEach(({ phase, event: { data, method, section } }) => {
-          console.log(`\t' ${phase}: ${section}.${method}:: ${data}`);
-        });
-
-        unsub();
-      }
-    });
-
-    // example log
-    // Current status is Ready
-    // substrate.js:196 Current status is Finalized
-    // substrate.js:199 Transaction included at blockHash 0x5b04f95389862e94fac95390b1f925fe4a01ae51c9c849b3198c73a60ecdaa24
-    // substrate.js:203 	' {"ApplyExtrinsic":1}: treasury.Deposit:: [2445987531568]
-    // substrate.js:203 	' {"ApplyExtrinsic":1}: voting.VoteCreated:: [1,"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",{"binary":null}]
-    // substrate.js:203 	' {"ApplyExtrinsic":1}: signaling.NewProposal:: ["5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","0xd13c7862d41dc35f3c7960c588868730476c5bc847989f57d37dc0ad54e42cec"]
-    // substrate.js:203 	' {"ApplyExtrinsic":1}: system.ExtrinsicSuccess:: [{"weight":10000,"class":0,"paysFee":true}]
+    return this.signAndSend(this.api.tx.signaling.createProposal(title, contents, outcomes, voteType, tallyType));
   }
 
   async subscribeNewHeads(callback) {

@@ -162,7 +162,8 @@ export default () => {
                   onChange={onOutcomeChange}
                   fullWidth
                   inputProps={{ maxLength: 32 }}
-                  multiline />
+                  multiline
+                  required />
                 <br /><br />
               </>
             );
