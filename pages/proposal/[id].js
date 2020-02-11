@@ -53,7 +53,6 @@ const Proposal = () => {
       }
     }
 
-    console.log('voteResults', voteResults)
     setResults(voteResults);
   }
 
@@ -70,8 +69,6 @@ const Proposal = () => {
       loadProposal();
     }
   }, [proposal]);
-
-  // TODO: list otucomes, allow to select them, then on submit vote call extrinsic voting.commit or voting.reveal with hash of vote outcome
 
   if (proposal) {
     return (
@@ -117,7 +114,7 @@ const Proposal = () => {
                   <FormLabel component="legend">Your Vote</FormLabel>
                   <RadioGroup aria-label="vote" name="vote" value={vote} onChange={handleVoteChange}>
                     {voteRecords.outcomes.map((outcome, index) => (
-                      <FormControlLabel key={index} value={outcome} control={<Radio />} label={`${outcome} - ${results ? results[outcome] : 0}/${voteRecords ? voteRecords.reveals.length : 0} votes`} />
+                      <FormControlLabel key={index} value={outcome} control={<Radio />} label={`${outcome} - ${results ? (results[outcome] || 0) : 0}/${voteRecords ? voteRecords.reveals.length : 0} votes`} />
                     ))}
                   </RadioGroup>
                 </FormControl>
