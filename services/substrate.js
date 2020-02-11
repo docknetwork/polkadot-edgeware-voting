@@ -160,22 +160,7 @@ class SubstrateService {
         .then(() => this.advanceProposal(hash));
     }
 
-    const alice = this.keyring.addFromUri('//Alice', { name: 'Alice' });
-    const transfer = this.api.tx.signaling.advanceProposal(hash);
-    const unsub = await transfer.signAndSend(alice, ({ events = [], status }) => {
-      console.log(`Current status is ${status.type}`);
-
-      if (status.isFinalized) {
-        console.log(`Transaction included at blockHash ${status.asFinalized}`);
-
-        // Loop through Vec<EventRecord> to display all events
-        events.forEach(({ phase, event: { data, method, section } }) => {
-          console.log(`\t' ${phase}: ${section}.${method}:: ${data}`);
-        });
-
-        unsub();
-      }
-    });
+    return this.signAndSend(this.api.tx.signaling.advanceProposal(hash));
   }
 
   async createProposal({ title, contents, outcomes, voteType, tallyType }) {
@@ -225,8 +210,29 @@ class SubstrateService {
     return await this.api.rpc.chain.subscribeNewHeads(callback);
   }
 
-  vote(id, outcome) {
-    console.log('vote', id,outcome)
+  async vote(id, outcome) {
+    const resultOutcome = new Uint8Array(outcome.substr(2, outcome.length).match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+    console.log('vote', id,outcome, resultOutcome)
+    return this.signAndSend(this.api.tx.voting.commit(id, resultOutcome));
+  }
+
+  async signAndSend(transfer) {
+    // TODO: allow to set custom accounts
+    const alice = this.keyring.addFromUri('//Alice', { name: 'Alice' });
+    const unsub = await transfer.signAndSend(alice, ({ events = [], status }) => {
+      console.log(`Current status is ${status.type}`);
+
+      if (status.isFinalized) {
+        console.log(`Transaction included at blockHash ${status.asFinalized}`);
+
+        // Loop through Vec<EventRecord> to display all events
+        events.forEach(({ phase, event: { data, method, section } }) => {
+          console.log(`\t' ${phase}: ${section}.${method}:: ${data}`);
+        });
+
+        unsub();
+      }
+    });
   }
 
   getEvents(callback) {
