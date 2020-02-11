@@ -77,7 +77,7 @@ const Proposal = () => {
                   Reveals: {voteRecords ? voteRecords.reveals.length : 0}
                 </Typography>
                 <Typography variant="h6" color="textSecondary" gutterBottom>
-                  Reveals: {voteRecords ? voteRecords.reveals.length : 0}
+                  Stage: {JSON.stringify(voteRecords.data.stage)}
                 </Typography>
                 <Typography variant="h6" color="textSecondary" gutterBottom>
                   Vote Type: {voteRecords.data.vote_type.binary === null ? 'Binary' : 'MultiOption'}
