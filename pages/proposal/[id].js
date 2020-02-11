@@ -37,8 +37,6 @@ const Proposal = () => {
   // TODO: list otucomes, allow to select them, then on submit vote call extrinsic voting.commit or voting.reveal with hash of vote outcome
 
   if (proposal) {
-    const contents = JSON.parse(proposal.contents);
-
     return (
       <Container maxWidth="md">
         <Typography variant="h4">
@@ -48,7 +46,7 @@ const Proposal = () => {
         <Card>
           <CardContent>
             <Typography variant="h5">
-              {contents.description}
+              {proposal.contents}
             </Typography>
             <br />
             <Typography variant="h6" color="textSecondary" gutterBottom>

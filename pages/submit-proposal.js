@@ -56,20 +56,26 @@ export default () => {
   function handleCreateProposal(e) {
     e.preventDefault();
 
+    const outcomeExamples = ['Yes', 'No'];
+
     // fixed size 32 length array of u8
-    const YES_VOTE = new Uint8Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1]);
-    const NO_VOTE = new Uint8Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);
-    const outcomes = [YES_VOTE, NO_VOTE];
+    const outcomes = [];
+    const enc = new TextEncoder(); // always utf-8
 
-    const contents = JSON.stringify({
-      description: state.description
-    });
+    for (let i = 0; i < outcomeExamples.length; i++) {
+      const encodedOutcome = enc.encode(outcomeExamples[i]);
+      const resultArray = new Uint8Array(new ArrayBuffer(32));
+      resultArray.set(encodedOutcome);
+      outcomes.push(resultArray);
+    }
 
-    substrateService.createProposal({
+    const data = {
       ...state,
-      contents,
       outcomes,
-    });
+    };
+    console.log(data);
+
+    return substrateService.createProposal(data);
   }
 
   return (
@@ -84,15 +90,17 @@ export default () => {
           label="Title"
           variant="outlined"
           onChange={handleChange}
-          fullWidth />
+          fullWidth
+          required />
         <br /><br />
         <TextField
-          name="description"
+          name="contents"
           label="Description"
           variant="outlined"
           onChange={handleChange}
           fullWidth
-          multiline />
+          multiline
+          required />
         <br /><br />
 
         <FormControl variant="outlined" fullWidth>
@@ -128,6 +136,17 @@ export default () => {
         </FormControl>
 
         <br /><br />
+
+        <div>
+          <TextField
+            name="outcome-0"
+            label="Outcome 0"
+            variant="outlined"
+            fullWidth
+            maxLength={32}
+            multiline />
+          <br /><br />
+        </div>
 
         <Button
           variant="contained"
