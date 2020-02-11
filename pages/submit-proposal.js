@@ -30,6 +30,7 @@ const tallyTypes = [
 
 export default () => {
   const [hash, setHash] = useState();
+  const [outcomeStrs, setOutcomeStrs] = useState(['', '']);
   const [state, setState] = useState({
     voteType: 0,
     tallyType: 0,
@@ -56,14 +57,12 @@ export default () => {
   function handleCreateProposal(e) {
     e.preventDefault();
 
-    const outcomeExamples = ['Yes', 'No'];
-
     // fixed size 32 length array of u8
     const outcomes = [];
     const enc = new TextEncoder(); // always utf-8
 
-    for (let i = 0; i < outcomeExamples.length; i++) {
-      const encodedOutcome = enc.encode(outcomeExamples[i]);
+    for (let i = 0; i < outcomeStrs.length; i++) {
+      const encodedOutcome = enc.encode(outcomeStrs[i]);
       const resultArray = new Uint8Array(new ArrayBuffer(32));
       resultArray.set(encodedOutcome);
       outcomes.push(resultArray);
@@ -76,6 +75,13 @@ export default () => {
     console.log(data);
 
     return substrateService.createProposal(data);
+  }
+
+  function handleAddOutcome() {
+    outcomeStrs.push('');
+    setOutcomeStrs([
+      ...outcomeStrs,
+    ]);
   }
 
   return (
@@ -138,15 +144,41 @@ export default () => {
         <br /><br />
 
         <div>
-          <TextField
-            name="outcome-0"
-            label="Outcome 0"
-            variant="outlined"
-            fullWidth
-            maxLength={32}
-            multiline />
-          <br /><br />
+          {outcomeStrs.map((outcome, index) => {
+            function onOutcomeChange(e) {
+              outcomeStrs[index] = e.target.value;
+              setOutcomeStrs([
+                ...outcomeStrs
+              ]);
+            }
+
+            return (
+              <>
+                <TextField
+                  name={`outcome-${index}`}
+                  label={`Outcome ${index}`}
+                  variant="outlined"
+                  value={outcome}
+                  onChange={onOutcomeChange}
+                  fullWidth
+                  inputProps={{ maxLength: 32 }}
+                  multiline />
+                <br /><br />
+              </>
+            );
+          })}
+
+          <Button
+            variant="contained"
+            color="secondary"
+            type="button"
+            onClick={handleAddOutcome}
+            >
+            Add Outcome
+          </Button>
         </div>
+
+        <br />
 
         <Button
           variant="contained"
