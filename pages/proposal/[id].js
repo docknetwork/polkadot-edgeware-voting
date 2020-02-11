@@ -40,7 +40,7 @@ const Proposal = () => {
   };
 
   function handleVote() {
-    substrateService.vote(voteRecords.id, voteRecords.outcomes[0]);
+    substrateService.vote(voteRecords.id, vote);
   }
 
   useEffect(() => {
@@ -80,7 +80,7 @@ const Proposal = () => {
               <>
                 <FormControl component="fieldset">
                   <FormLabel component="legend">Your Vote</FormLabel>
-                  <RadioGroup aria-label="gender" name="gender1" value={vote} onChange={handleVoteChange}>
+                  <RadioGroup aria-label="vote" name="vote" value={vote} onChange={handleVoteChange}>
                     {voteRecords.outcomes.map((outcome, index) => (
                       <FormControlLabel key={index} value={outcome} control={<Radio />} label={outcome} />
                     ))}

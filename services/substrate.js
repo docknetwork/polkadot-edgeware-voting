@@ -226,7 +226,7 @@ class SubstrateService {
   }
 
   vote(id, outcome) {
-    
+    console.log('vote', id,outcome)
   }
 
   getEvents(callback) {
