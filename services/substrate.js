@@ -225,6 +225,10 @@ class SubstrateService {
     return await this.api.rpc.chain.subscribeNewHeads(callback);
   }
 
+  vote(id, outcome) {
+    
+  }
+
   getEvents(callback) {
     if (!this.state.connected) {
       return this.connect()

@@ -40,7 +40,7 @@ const Proposal = () => {
   };
 
   function handleVote() {
-
+    substrateService.vote(voteRecords.id, voteRecords.outcomes[0]);
   }
 
   useEffect(() => {
