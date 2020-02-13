@@ -36,24 +36,26 @@ const Proposal = () => {
     console.log('setProposal', data.toJSON())
     console.log('voteRecords', voteData);
 
-    const voteResults = {};
-    const revealsCount = voteData.reveals.length;
-    for (let i = 0; i < revealsCount; i++) {
-      const reveal = voteData.reveals[i];
-      const voterAddress = reveal[0];
-      const votedOptions = reveal[1];
+    if (voteData) {
+      const voteResults = {};
+      const revealsCount = voteData.reveals.length;
+      for (let i = 0; i < revealsCount; i++) {
+        const reveal = voteData.reveals[i];
+        const voterAddress = reveal[0];
+        const votedOptions = reveal[1];
 
-      for (let c = 0; c < votedOptions.length; c++) {
-        const option = votedOptions[c];
-        if (voteResults[option]) {
-          voteResults[option]++;
-        } else {
-          voteResults[option] = 1;
+        for (let c = 0; c < votedOptions.length; c++) {
+          const option = votedOptions[c];
+          if (voteResults[option]) {
+            voteResults[option]++;
+          } else {
+            voteResults[option] = 1;
+          }
         }
       }
-    }
 
-    setResults(voteResults);
+      setResults(voteResults);
+    }
   }
 
   const handleVoteChange = event => {
