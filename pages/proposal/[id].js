@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import { useRouter } from 'next/router';
-import styled from 'styled-components';
 import TextField from '@material-ui/core/TextField';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
@@ -103,6 +102,9 @@ const Proposal = () => {
 
             {voteRecords && (
               <>
+                <Typography variant="h6" color="textSecondary" gutterBottom>
+                  Author: {proposal.author}
+                </Typography>
                 <Typography variant="h6" color="textSecondary" gutterBottom>
                   Commitments: {voteRecords ? voteRecords.commitments.length : 0}
                 </Typography>
