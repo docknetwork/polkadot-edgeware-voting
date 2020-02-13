@@ -1,10 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import styled from 'styled-components';
-import TextField from '@material-ui/core/TextField';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Box from '@material-ui/core/Paper';
+
 import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
@@ -29,7 +25,6 @@ export default () => {
       });
     }
   }, [proposals]);
-
 
   return (
     <>

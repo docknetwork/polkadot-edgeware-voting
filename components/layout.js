@@ -64,8 +64,9 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'flex-end',
   },
   content: {
+    maxWidth: '100vw',
     flexGrow: 1,
-    padding: theme.spacing(3),
+    paddingTop: theme.spacing(3),
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -134,7 +135,7 @@ export default function PersistentDrawerLeft({children}) {
           </IconButton>
           {(nodeState && nodeState.connected) ? (
             <Typography variant="h6" noWrap>
-              {nodeState.chain} using {nodeState.nodeName} v{nodeState.nodeVersion}
+              {nodeState.chain} / {nodeState.nodeName} v{nodeState.nodeVersion}
             </Typography>
           ) : (
             <Typography variant="h6" noWrap>
