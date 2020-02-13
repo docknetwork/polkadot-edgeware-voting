@@ -1,16 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import { useRouter } from 'next/router';
-import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Box from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
@@ -39,7 +34,7 @@ const Proposal = () => {
       const revealsCount = voteData.reveals.length;
       for (let i = 0; i < revealsCount; i++) {
         const reveal = voteData.reveals[i];
-        const voterAddress = reveal[0];
+        // const voterAddress = reveal[0];
         const votedOptions = reveal[1];
 
         for (let c = 0; c < votedOptions.length; c++) {

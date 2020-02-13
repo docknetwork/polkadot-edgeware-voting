@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import Link from 'next/link';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
@@ -7,8 +7,6 @@ import CardContent from '@material-ui/core/CardContent';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import Skeleton from '@material-ui/lab/Skeleton';
-
-import substrateService from '../services/substrate';
 
 const Proposal = ({proposal}) => {
   let stage = 'prevoting';

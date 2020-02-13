@@ -6,7 +6,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import substrateService from '../services/substrate';
 import Proposal from '../components/proposal';
 
-export default () => {
+const Index = () => {
   const [proposals, setProposals] = useState();
   const [inactiveProposals, setInactiveProposals] = useState();
   const [completedProposals, setCompletedProposals] = useState();
@@ -39,10 +39,12 @@ export default () => {
         <CircularProgress />
       )}
 
-      <br /><br />
+      <br />
+      <br />
 
       <Typography variant="h5">
-        Completed Proposals ({completedProposals ? completedProposals.length : 0})
+        Completed Proposals (
+        {completedProposals ? completedProposals.length : 0})
       </Typography>
       <br />
       {completedProposals ? (
@@ -53,7 +55,8 @@ export default () => {
         <CircularProgress />
       )}
 
-      <br /><br />
+      <br />
+      <br />
 
       <Typography variant="h5">
         Inactive Proposals ({inactiveProposals ? inactiveProposals.length : 0})
@@ -68,4 +71,6 @@ export default () => {
       )}
     </>
   );
-}
+};
+
+export default Index;

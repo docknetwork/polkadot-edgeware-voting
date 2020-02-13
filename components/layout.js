@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import Link from 'next/link';
 import clsx from 'clsx';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import AppBar from '@material-ui/core/AppBar';
@@ -81,19 +81,23 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const listItems = [{
-  name: 'Proposals',
-  icon: <InboxIcon />,
-  href: '/',
-}, {
-  name: 'Submit Proposal',
-  icon: <MailIcon />,
-  href: '/submit-proposal',
-}, {
-  name: 'Advance Proposal',
-  icon: <MailIcon />,
-  href: '/advance-proposal',
-}];
+const listItems = [
+  {
+    name: 'Proposals',
+    icon: <InboxIcon />,
+    href: '/',
+  },
+  {
+    name: 'Submit Proposal',
+    icon: <MailIcon />,
+    href: '/submit-proposal',
+  },
+  {
+    name: 'Advance Proposal',
+    icon: <MailIcon />,
+    href: '/advance-proposal',
+  },
+];
 
 export default function PersistentDrawerLeft({children}) {
   const classes = useStyles();
@@ -104,10 +108,10 @@ export default function PersistentDrawerLeft({children}) {
   useEffect(() => {
     substrateService.onUpdateState.subscribe(setNodeState);
     setNodeState({
-      connected: false
+      connected: false,
     });
     substrateService.connect();
-  },[]);
+  }, []);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -136,7 +140,7 @@ export default function PersistentDrawerLeft({children}) {
           >
             <MenuIcon />
           </IconButton>
-          {(nodeState && nodeState.connected) ? (
+          {nodeState && nodeState.connected ? (
             <Typography variant="h6" noWrap>
               {nodeState.chain} / {nodeState.nodeName} v{nodeState.nodeVersion}
             </Typography>
@@ -158,7 +162,11 @@ export default function PersistentDrawerLeft({children}) {
       >
         <div className={classes.drawerHeader}>
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+            {theme.direction === 'ltr' ? (
+              <ChevronLeftIcon />
+            ) : (
+              <ChevronRightIcon />
+            )}
           </IconButton>
         </div>
         <Divider />
@@ -182,7 +190,8 @@ export default function PersistentDrawerLeft({children}) {
 
         <Container maxWidth="md">
           {children}
-          <br /><br />
+          <br />
+          <br />
         </Container>
       </main>
     </div>

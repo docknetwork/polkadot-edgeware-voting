@@ -1,12 +1,10 @@
 import React from 'react';
 import App from 'next/app';
 import {MuiThemeProvider} from '@material-ui/core/styles';
-import {withStyles} from '@material-ui/core/styles';
 import {PageTransition} from 'next-page-transitions';
 import 'normalize.css';
 
 import materialTheme from '../components/theme';
-
 import Layout from '../components/layout';
 
 const TIMEOUT = 250;
@@ -16,13 +14,8 @@ class MyApp extends App {
     super(props);
   }
 
-  componentDidMount() {
-    // TODO: connect to node here
-  }
-
   render() {
-    const {Component, pageProps, classes} = this.props;
-
+    const {Component, pageProps} = this.props;
     return (
       <>
         <MuiThemeProvider theme={materialTheme}>
