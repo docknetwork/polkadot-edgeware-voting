@@ -106,7 +106,6 @@ class SubstrateService {
       const baseData = proposal.toJSON();
       const proposalData = {
         hash: baseData[0],
-        number: baseData[1]
       };
 
       this.getProposal(baseData[0])

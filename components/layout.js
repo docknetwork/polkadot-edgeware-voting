@@ -25,11 +25,6 @@ import substrateService, {nodeAddress} from '../services/substrate';
 
 const drawerWidth = 240;
 
-const ContentWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
@@ -147,7 +142,7 @@ export default function PersistentDrawerLeft({children}) {
             </Typography>
           ) : (
             <Typography variant="h6" noWrap>
-              Connecting to {nodeAddress}...
+              Connecting to node at {nodeAddress}...
             </Typography>
           )}
         </Toolbar>
@@ -185,10 +180,8 @@ export default function PersistentDrawerLeft({children}) {
       >
         <div className={classes.drawerHeader} />
 
-        <Container maxWidth="xl">
-          <ContentWrapper>
-            {children}
-          </ContentWrapper>
+        <Container maxWidth="md">
+          {children}
         </Container>
       </main>
     </div>
