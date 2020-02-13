@@ -25,7 +25,6 @@ class SubstrateService {
     if (this.state.connected) {
       return;
     } else if (this.state.connecting) {
-      console.log('still connecting, adding callback');
       return new Promise(resolve => {
         this.onConnectCallbacks.push(resolve);
       });
@@ -60,16 +59,16 @@ class SubstrateService {
     this.state.connected = true;
     this.state.connecting = false;
 
-    // loop on connect callbacks
+    // Add dev accounts
+    this.account = this.keyring.addFromUri('//Alice', {name: 'Alice'});
+    this.keyring.addFromUri('//Bob', {name: 'Bob'});
+
+    // Loop on connect callbacks
     for (let i = 0; i < this.onConnectCallbacks.length; i++) {
       const callback = this.onConnectCallbacks[i];
       callback();
     }
     this.onConnectCallbacks = [];
-
-    // add dev accounts
-    this.account = this.keyring.addFromUri('//Alice', {name: 'Alice'}); // dev only, of course
-    this.keyring.addFromUri('//Bob', {name: 'Bob'}); // dev only, of course
 
     return this.setState({
       ...this.state,
