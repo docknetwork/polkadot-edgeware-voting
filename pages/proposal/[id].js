@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { useRouter } from 'next/router';
 import TextField from '@material-ui/core/TextField';
-import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Box from '@material-ui/core/Paper';
@@ -85,7 +84,7 @@ const Proposal = () => {
 
   if (proposal) {
     return (
-      <Container maxWidth="md">
+      <>
         <Typography variant="h4">
           {proposal.title}
         </Typography>
@@ -151,7 +150,7 @@ const Proposal = () => {
             )}
           </CardContent>
         </Card>
-      </Container>
+      </>
     );
   } else {
     return (
