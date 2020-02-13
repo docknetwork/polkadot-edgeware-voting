@@ -179,16 +179,15 @@ class SubstrateService {
     return await this.api.rpc.chain.subscribeNewHeads(callback);
   }
 
-  async vote(id, outcome, isCommitReveal) {
+  async vote(id, outcome, isCommitReveal, onComplete, onError) {
     const resultOutcome = new Uint8Array(outcome.substr(2, outcome.length).match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
-    console.log('vote', id,outcome, resultOutcome, 'isCommitReveal', isCommitReveal)
     if (isCommitReveal) {
       // not supported properly yet
-      return this.signAndSend(this.api.tx.voting.commit(id, resultOutcome));
+      return this.signAndSend(this.api.tx.voting.commit(id, resultOutcome), onComplete, onError);
     } else {
       // general purpose vote
       const options = [resultOutcome]; // TODO: support multiple options
-      return this.signAndSend(this.api.tx.voting.reveal(id, options, null));
+      return this.signAndSend(this.api.tx.voting.reveal(id, options, null), onComplete, onError);
     }
   }
 
