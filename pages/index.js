@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react';
-import styled from 'styled-components';
 
 import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';

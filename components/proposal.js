@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import Link from 'next/link';
-import styled from 'styled-components';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Card from '@material-ui/core/Card';
@@ -27,7 +26,7 @@ const Proposal = ({proposal}) => {
               <CardActionArea>
                 <CardContent>
                   <Typography color="textSecondary" gutterBottom>
-                    {proposal.data.transition_time} seconds left
+                    Transition Time: {proposal.data.transition_time}
                   </Typography>
                   <Typography variant="h5" component="h2" gutterBottom>
                     {`${proposal.data.title}`}
