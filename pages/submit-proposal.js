@@ -12,6 +12,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import Snackbar from '@material-ui/core/Snackbar';
+import Alert from '@material-ui/lab/Alert';
 
 import substrateService from '../services/substrate';
 
@@ -28,6 +30,8 @@ const tallyTypes = [
 ];
 
 export default () => {
+  const [isSubmitting, setIsSubmitting] = useState();
+  const [newHash, setNewHash] = useState();
   const [hash, setHash] = useState();
   const [outcomeStrs, setOutcomeStrs] = useState(['', '']);
   const [state, setState] = useState({
@@ -55,11 +59,10 @@ export default () => {
 
   function handleCreateProposal(e) {
     e.preventDefault();
+    setIsSubmitting(true);
 
-    // fixed size 32 length array of u8
     const outcomes = [];
-    const enc = new TextEncoder(); // always utf-8
-
+    const enc = new TextEncoder();
     for (let i = 0; i < outcomeStrs.length; i++) {
       const encodedOutcome = enc.encode(outcomeStrs[i]);
       const resultArray = new Uint8Array(new ArrayBuffer(32));
@@ -71,9 +74,18 @@ export default () => {
       ...state,
       outcomes,
     };
-    console.log(data);
 
-    return substrateService.createProposal(data);
+    return substrateService.createProposal(data, (status, events) => {
+      events.forEach(({ phase, event: { data, method, section } }) => {
+        if (method === 'NewProposal') {
+          setNewHash(temp1.toJSON()[1]);
+        }
+      });
+
+      setIsSubmitting(false);
+    }, error => {
+      setIsSubmitting(false);
+    });
   }
 
   function handleAddOutcome() {
@@ -84,17 +96,18 @@ export default () => {
   }
 
   return (
-    <Container maxWidth="md">
+    <>
       <Typography variant="h5">
         Submit Proposal
       </Typography>
       <br />
-      <form noValidate onSubmit={handleCreateProposal}>
+      <form onSubmit={handleCreateProposal}>
         <TextField
           name="title"
           label="Title"
           variant="outlined"
           onChange={handleChange}
+          disabled={isSubmitting}
           fullWidth
           required />
         <br /><br />
@@ -103,6 +116,7 @@ export default () => {
           label="Description"
           variant="outlined"
           onChange={handleChange}
+          disabled={isSubmitting}
           fullWidth
           multiline
           required />
@@ -116,6 +130,7 @@ export default () => {
             name="voteType"
             value={state.voteType}
             onChange={handleChange}
+            disabled={isSubmitting}
           >
             {voteTypes.map((type, index) => (
               <MenuItem value={index} key={index}>{type}</MenuItem>
@@ -133,6 +148,7 @@ export default () => {
             name="tallyType"
             value={state.tallyType}
             onChange={handleChange}
+            disabled={isSubmitting}
           >
             {tallyTypes.map((type, index) => (
               <MenuItem value={index} key={index}>{type}</MenuItem>
@@ -160,6 +176,7 @@ export default () => {
                   value={outcome}
                   onChange={onOutcomeChange}
                   fullWidth
+                  disabled={isSubmitting}
                   inputProps={{ maxLength: 32 }}
                   multiline
                   required />
@@ -173,6 +190,7 @@ export default () => {
             color="secondary"
             type="button"
             onClick={handleAddOutcome}
+            disabled={isSubmitting}
             >
             Add Outcome
           </Button>
@@ -184,10 +202,23 @@ export default () => {
           variant="contained"
           color="primary"
           type="submit"
+          disabled={isSubmitting}
           >
           Submit
         </Button>
       </form>
+
+      <Snackbar open={isSubmitting}>
+        <Alert severity="info">
+          Submitting transaction, please wait...
+        </Alert>
+      </Snackbar>
+
+      <Snackbar open={!!newHash}>
+        <Alert severity="success">
+          Proposal created with hash {newHash}
+        </Alert>
+      </Snackbar>
 
       <br /><br />
       <Typography variant="h5">
@@ -210,6 +241,6 @@ export default () => {
           Submit
         </Button>
       </form>
-    </Container>
+    </>
   );
 }

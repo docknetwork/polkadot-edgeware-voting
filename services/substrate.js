@@ -160,13 +160,13 @@ class SubstrateService {
     return this.signAndSend(this.api.tx.signaling.advanceProposal(hash));
   }
 
-  async createProposal({ title, contents, outcomes, voteType, tallyType }) {
+  async createProposal({ title, contents, outcomes, voteType, tallyType }, onComplete, onError) {
     if (!this.state.connected) {
       return this.connect()
         .then(() => this.createProposal(title, contents, outcomes, voteType, tallyType));
     }
 
-    return this.signAndSend(this.api.tx.signaling.createProposal(title, contents, outcomes, voteType, tallyType));
+    return this.signAndSend(this.api.tx.signaling.createProposal(title, contents, outcomes, voteType, tallyType), onComplete, onError);
   }
 
   async subscribeNewHeads(callback) {
@@ -192,14 +192,17 @@ class SubstrateService {
     }
   }
 
-  async signAndSend(transfer) {
+  getAccount() {
     // TODO: allow to set custom accounts
     // console.log('pairs', this.keyring.getPairs())
     const alice = this.keyring.addFromUri('//Alice', { name: 'Alice' }); // dev only, of course
     console.log(`${alice.meta.name}: has address ${alice.address} with publicKey [${alice.publicKey}]`);
+    return alice;
+  }
 
-    const unsub = await transfer.signAndSend(alice, ({ events = [], status }) => {
-      console.log(`Current status is ${status.type}`);
+  async signAndSend(transfer, onComplete, onError) {
+    const unsub = await transfer.signAndSend(this.getAccount(), ({ events = [], status }) => {
+      console.log(`Current status is ${status.type}`, status);
 
       if (status.isFinalized) {
         console.log(`Transaction included at blockHash ${status.asFinalized}`);
@@ -209,7 +212,14 @@ class SubstrateService {
           console.log(`\t' ${phase}: ${section}.${method}:: ${data}`);
         });
 
+        if (onComplete) {
+          onComplete(status, events);
+        }
         unsub();
+      }
+    }).catch(error => {
+      if (onError) {
+        onError(error);
       }
     });
   }
