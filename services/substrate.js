@@ -1,4 +1,6 @@
 import { ApiPromise, WsProvider } from '@polkadot/api';
+import { stringToU8a, u8aToHex } from '@polkadot/util';
+import { Keyring } from '@polkadot/api';
 import { Observable } from 'rxjs';
 
 import { IdentityTypes } from 'edgeware-node-types/dist/identity';
@@ -7,9 +9,6 @@ import { SignalingTypes } from 'edgeware-node-types/dist/signaling';
 import { Balance2, TreasuryRewardTypes } from 'edgeware-node-types/dist/treasuryReward';
 
 export const nodeAddress = 'ws://127.0.0.1:9944';
-
-import { Keyring } from '@polkadot/api';
-import { stringToU8a, u8aToHex } from '@polkadot/util';
 
 class SubstrateService {
   constructor() {
@@ -37,8 +36,6 @@ class SubstrateService {
     const keyring = new Keyring({ type: 'sr25519' });
     this.keyring = keyring;
 
-    // TODO: check if unable to connect
-
     // Create the API and wait until ready
     this.api = await ApiPromise.create({
       provider,
@@ -60,8 +57,6 @@ class SubstrateService {
 
     this.state.connected = true;
     this.state.connecting = false;
-
-    console.log('connected, callbacks:', this.onConnectCallbacks)
 
     // loop on connect callbacks
     for (let i = 0; i < this.onConnectCallbacks.length; i++) {
@@ -98,24 +93,6 @@ class SubstrateService {
     }
 
     return this.api.query.signaling.proposalOf(hash);
-  }
-
-  formatProposalList(proposals) {
-    const result = [];
-    proposals.forEach(proposal => {
-      const baseData = proposal.toJSON();
-      const proposalData = {
-        hash: baseData[0],
-      };
-
-      this.getProposal(baseData[0])
-        .then(data => {
-          proposalData.data = data.toJSON();
-        });
-
-      result.push(proposalData);
-    });
-    return result;
   }
 
   async getActiveProposals(callback) {
@@ -169,16 +146,6 @@ class SubstrateService {
     return this.signAndSend(this.api.tx.signaling.createProposal(title, contents, outcomes, voteType, tallyType), onComplete, onError);
   }
 
-  async subscribeNewHeads(callback) {
-    if (!this.state.connected) {
-      return this.connect()
-        .then(() => this.subscribeNewHeads(callback));
-    }
-
-    // TODO: unsubscribe
-    return await this.api.rpc.chain.subscribeNewHeads(callback);
-  }
-
   async vote(id, outcome, isCommitReveal, onComplete, onError) {
     const resultOutcome = new Uint8Array(outcome.substr(2, outcome.length).match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
     if (isCommitReveal) {
@@ -189,14 +156,6 @@ class SubstrateService {
       const options = [resultOutcome]; // TODO: support multiple options
       return this.signAndSend(this.api.tx.voting.reveal(id, options, null), onComplete, onError);
     }
-  }
-
-  getAccount() {
-    // TODO: allow to set custom accounts
-    // console.log('pairs', this.keyring.getPairs())
-    const alice = this.keyring.addFromUri('//Alice', { name: 'Alice' }); // dev only, of course
-    console.log(`${alice.meta.name}: has address ${alice.address} with publicKey [${alice.publicKey}]`);
-    return alice;
   }
 
   async signAndSend(transfer, onComplete, onError) {
@@ -223,17 +182,30 @@ class SubstrateService {
     });
   }
 
-  getEvents(callback) {
-    if (!this.state.connected) {
-      return this.connect()
-        .then(() => this.getEvents(callback));
-    }
+  formatProposalList(proposals) {
+    const result = [];
+    proposals.forEach(proposal => {
+      const baseData = proposal.toJSON();
+      const proposalData = {
+        hash: baseData[0],
+      };
 
-    // Subscribe to system events via storage
-    this.api.query.system.events((events) => {
-      console.log(`\nReceived ${events.length} events:`);
-      events.forEach(callback);
+      this.getProposal(baseData[0])
+        .then(data => {
+          proposalData.data = data.toJSON();
+        });
+
+      result.push(proposalData);
     });
+    return result;
+  }
+
+  getAccount() {
+    // TODO: allow to set custom accounts
+    // console.log('pairs', this.keyring.getPairs())
+    const alice = this.keyring.addFromUri('//Alice', { name: 'Alice' }); // dev only, of course
+    console.log(`${alice.meta.name}: has address ${alice.address} with publicKey [${alice.publicKey}]`);
+    return alice;
   }
 
   connected() {
