@@ -9,6 +9,14 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
+import DoneIcon from '@material-ui/icons/Done';
+
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 
 import substrateService from '../../services/substrate';
 
@@ -26,8 +34,7 @@ const Proposal = () => {
     const voteRecords = await substrateService.getVoteRecords(data.toJSON().vote_id);
     const voteData = voteRecords.toJSON();
     setVoteRecords(voteData);
-    console.log('setProposal', data.toJSON())
-    console.log('voteRecords', voteData);
+    console.log('voteData', voteData)
 
     if (voteData) {
       const voteResults = {};
@@ -100,12 +107,6 @@ const Proposal = () => {
                   Author: {proposal.author}
                 </Typography>
                 <Typography variant="h6" color="textSecondary" gutterBottom>
-                  Commitments: {voteRecords ? voteRecords.commitments.length : 0}
-                </Typography>
-                <Typography variant="h6" color="textSecondary" gutterBottom>
-                  Reveals: {voteRecords ? voteRecords.reveals.length : 0}
-                </Typography>
-                <Typography variant="h6" color="textSecondary" gutterBottom>
                   Stage: {Object.keys(voteRecords.data.stage)[0]}
                 </Typography>
                 <Typography variant="h6" color="textSecondary" gutterBottom>
@@ -145,6 +146,84 @@ const Proposal = () => {
             )}
           </CardContent>
         </Card>
+
+        <br />
+
+        {voteRecords && (
+          <>
+            <Card>
+              <TableContainer component={CardContent}>
+                <Typography variant="h5">
+                  Reveals: {voteRecords ? voteRecords.reveals.length : 0}
+                </Typography>
+
+                <Table aria-label="Reveals table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Voter Address</TableCell>
+                      {voteRecords.outcomes.map((outcome, index) => (
+                        <TableCell align="right" key={index}>{hexToAscii(outcome)}</TableCell>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {voteRecords.reveals.map((row, index) => (
+                      <TableRow key={index}>
+                        <TableCell component="th" scope="row">
+                          {row[0]}
+                        </TableCell>
+                        {voteRecords.outcomes.map((outcome, index) => (
+                          <TableCell align="right">
+                            {row[1].indexOf(outcome) > -1 && (
+                              <DoneIcon />
+                            )}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Card>
+
+            <br />
+
+            <Card>
+              <TableContainer component={CardContent}>
+                <Typography variant="h5">
+                  Commitments: {voteRecords ? voteRecords.commitments.length : 0}
+                </Typography>
+
+                <Table aria-label="Reveals table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Voter Address</TableCell>
+                      {voteRecords.outcomes.map((outcome, index) => (
+                        <TableCell align="right" key={index}>{hexToAscii(outcome)}</TableCell>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {voteRecords.commitments.map((row, index) => (
+                      <TableRow key={index}>
+                        <TableCell component="th" scope="row">
+                          {row[0]}
+                        </TableCell>
+                        {voteRecords.outcomes.map((outcome, index) => (
+                          <TableCell align="right">
+                            {row[1].indexOf(outcome) > -1 && (
+                              <DoneIcon />
+                            )}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Card>
+          </>
+        )}
       </>
     );
   } else {
