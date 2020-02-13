@@ -17,8 +17,6 @@ import Alert from '@material-ui/lab/Alert';
 
 import substrateService from '../services/substrate';
 
-// TODO: finish ui for submtiting and selecting various options
-
 const voteTypes = [
   'Binary',
   'MultiOption',
@@ -39,9 +37,6 @@ export default () => {
     tallyType: 0,
   });
   const inputLabel = useRef(null);
-  const handleHashChange = event => {
-    setHash(event.target.value);
-  };
 
   const handleChange = event => {
     const newState = {};
@@ -51,11 +46,6 @@ export default () => {
       ...newState,
     });
   };
-
-  function handleAdvanceProposal(e) {
-    e.preventDefault();
-    substrateService.advanceProposal(hash);
-  }
 
   function handleCreateProposal(e) {
     e.preventDefault();
@@ -219,28 +209,6 @@ export default () => {
           Proposal created with hash {newHash}
         </Alert>
       </Snackbar>
-
-      <br /><br />
-      <Typography variant="h5">
-        Advance Proposal
-      </Typography>
-      <br />
-      <form noValidate onSubmit={handleAdvanceProposal}>
-        <TextField
-          name="hash"
-          label="Proposal Hash"
-          variant="outlined"
-          onChange={handleHashChange}
-          fullWidth />
-        <br /><br />
-        <Button
-          variant="contained"
-          color="primary"
-          type="submit"
-          >
-          Submit
-        </Button>
-      </form>
     </>
   );
 }

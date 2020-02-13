@@ -151,13 +151,13 @@ class SubstrateService {
     });
   }
 
-  async advanceProposal(hash) {
+  async advanceProposal(hash, onComplete, onError) {
     if (!this.state.connected) {
       return this.connect()
         .then(() => this.advanceProposal(hash));
     }
 
-    return this.signAndSend(this.api.tx.signaling.advanceProposal(hash));
+    return this.signAndSend(this.api.tx.signaling.advanceProposal(hash), onComplete, onError);
   }
 
   async createProposal({ title, contents, outcomes, voteType, tallyType }, onComplete, onError) {

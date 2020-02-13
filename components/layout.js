@@ -90,6 +90,10 @@ const listItems = [{
   name: 'Submit Proposal',
   icon: <MailIcon />,
   href: '/submit-proposal',
+}, {
+  name: 'Advance Proposal',
+  icon: <MailIcon />,
+  href: '/advance-proposal',
 }];
 
 export default function PersistentDrawerLeft({children}) {
