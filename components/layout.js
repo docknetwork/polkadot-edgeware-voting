@@ -19,6 +19,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import Container from '@material-ui/core/Container';
+import Avatar from '@material-ui/core/Avatar';
 
 import substrateService, {nodeAddress} from '../services/substrate';
 
@@ -78,6 +79,10 @@ const useStyles = makeStyles(theme => ({
       duration: theme.transitions.duration.enteringScreen,
     }),
     marginLeft: 0,
+  },
+  rightToolbar: {
+    marginLeft: 'auto',
+    marginRight: -12,
   },
 }));
 
@@ -141,9 +146,21 @@ export default function PersistentDrawerLeft({children}) {
             <MenuIcon />
           </IconButton>
           {nodeState && nodeState.connected ? (
-            <Typography variant="h6" noWrap>
-              {nodeState.chain} / {nodeState.nodeName} v{nodeState.nodeVersion}
-            </Typography>
+            <>
+              <Typography variant="h6" noWrap>
+                {nodeState.chain} / {nodeState.nodeName} v{nodeState.nodeVersion}
+              </Typography>
+
+              <section className={classes.rightToolbar}>
+                {substrateService.getAccount() && (
+                  <IconButton color="inherit" aria-label="My Account">
+                    <Avatar>
+                      {substrateService.getAccount().meta.name.substr(0, 1)}
+                    </Avatar>
+                  </IconButton>
+                )}
+              </section>
+            </>
           ) : (
             <Typography variant="h6" noWrap>
               Connecting to node at {nodeAddress}...

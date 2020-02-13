@@ -232,13 +232,15 @@ class SubstrateService {
   }
 
   getAccount() {
-    // TODO: allow to set custom accounts
-    // console.log('pairs', this.keyring.getPairs())
-    const alice = this.keyring.addFromUri('//Alice', {name: 'Alice'}); // dev only, of course
-    console.log(
-      `${alice.meta.name}: has address ${alice.address} with publicKey [${alice.publicKey}]`
-    );
-    return alice;
+    if (this.keyring) {
+      // TODO: allow to set custom accounts
+      // console.log('pairs', this.keyring.getPairs())
+      const alice = this.keyring.addFromUri('//Alice', {name: 'Alice'}); // dev only, of course
+      console.log(
+        `${alice.meta.name}: has address ${alice.address} with publicKey [${alice.publicKey}]`
+      );
+      return alice;
+    }
   }
 
   connected() {
