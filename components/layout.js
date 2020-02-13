@@ -82,13 +82,9 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const listItems = [{
-  name: 'Dashboard',
+  name: 'Proposals',
   icon: <InboxIcon />,
   href: '/',
-}, {
-  name: 'Proposals',
-  icon: <MailIcon />,
-  href: '/proposals',
 }, {
   name: 'Submit Proposal',
   icon: <MailIcon />,

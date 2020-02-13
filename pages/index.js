@@ -1,130 +1,84 @@
 import React, {useState, useEffect} from 'react';
+import Link from 'next/link';
 import styled from 'styled-components';
-import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
+import TextField from '@material-ui/core/TextField';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
+import Box from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
-import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import CardActions from '@material-ui/core/CardActions';
+import Skeleton from '@material-ui/lab/Skeleton';
 
 import substrateService from '../services/substrate';
+import Proposal from '../components/proposal';
 
-const CustomCard = styled(Card)`
-  margin-top: 20px;
-`;
-
-const useStyles = makeStyles({
-  card: {
-    minWidth: 275,
-  },
-});
-
-const Block = ({block}) => {
-  const classes = useStyles();
-  const hashHex = 'TODO: get hash';
-  return (
-    <CustomCard className={classes.card}>
-      <CardContent>
-        <Typography variant="h6" color="textSecondary" gutterBottom>
-          {hashHex}
-        </Typography>
-        <Typography variant="h5" component="h2">
-          {`${block.number}`}
-        </Typography>
-        <Typography color="textSecondary">
-          parentHash: {`${block.parentHash}`}
-        </Typography>
-        <Typography color="textSecondary">
-          stateRoot: {`${block.stateRoot}`}
-        </Typography>
-        <Typography color="textSecondary">
-          extrinsicsRoot: {`${block.extrinsicsRoot}`}
-        </Typography>
-      </CardContent>
-    </CustomCard>
-  );
-};
-
-const Event = ({record}) => {
-  const { event, phase } = record;
-  const types = event.typeDef;
-  const classes = useStyles();
-
-  return (
-    <CustomCard className={classes.card}>
-      <CardContent>
-        <Typography className={classes.title} color="textSecondary" gutterBottom>
-          {`${event.section}:${event.method}:: (phase=${phase.toString()})`}
-        </Typography>
-        <Typography variant="h5" component="h2">
-          {`${event.meta.documentation.toString()}`}
-        </Typography>
-
-        {event.data.map((data, index) => (
-          <Typography className={classes.pos} color="textSecondary" key={index}>
-            {`${types[index].type}: ${data.toString()}`}
-          </Typography>
-        ))}
-      </CardContent>
-    </CustomCard>
-  );
-};
-
-const Index = () => {
-  const [isConnecting, setIsConnecting] = useState(false);
-  const [isConnected, setConnected] = useState(false);
-  const [blocks, setBlocks] = useState([]);
-  const [events, setEvents] = useState([]);
-  const [blockCount, setBlockCount] = useState(-1);
-  const [eventCount, setEventCount] = useState(-1);
-
-  async function getBlocks() {
-    setBlockCount(0);
-    const unsubscribe = await substrateService.subscribeNewHeads((header) => {
-      blocks.push(header);
-      setBlockCount(blocks.length);
-    });
-  }
-
-  function getEvents() {
-    substrateService.getEvents(record => {
-      events.push(record);
-      setEventCount(events.length);
-    });
-  }
+export default () => {
+  const [proposals, setProposals] = useState();
+  const [inactiveProposals, setInactiveProposals] = useState();
+  const [completedProposals, setCompletedProposals] = useState();
+  const [proposalCount, setProposalCount] = useState(-1);
 
   useEffect(() => {
-    if (blockCount === -1) {
-      getBlocks();
-      getEvents();
+    if (proposalCount === -1) {
+      setProposalCount(0);
+      substrateService.getActiveProposals(value => {
+        setProposals(value);
+        substrateService.getInactiveProposals(value => {
+          setInactiveProposals(value);
+          substrateService.getCompletedProposals(setCompletedProposals);
+        });
+      });
     }
-  });
+  }, [proposals]);
+
 
   return (
-    <Grid container spacing={3}>
-      {blocks && (
-        <Grid item xs={6}>
-          <Typography variant="h5">
-            Blocks ({blocks.length})
-          </Typography>
-          {blocks.map((block, index) => (
-            <Block block={block} key={index} />
-          ))}
-        </Grid>
+    <>
+      <Typography variant="h5">
+        Active Proposals ({proposals ? proposals.length : 0})
+      </Typography>
+      <br />
+      {proposals ? (
+        proposals.map((proposal, index) => (
+          <Proposal key={index} {...{proposal}} />
+        ))
+      ) : (
+        <CircularProgress />
       )}
 
-      <Grid item xs={6}>
-        <Typography variant="h5">
-          Events ({events.length})
-        </Typography>
-        {events.map((event, index) => (
-          <Event record={event} key={index} />
-        ))}
-      </Grid>
-    </Grid>
-  );
-};
+      <br /><br />
 
-export default Index;
+      <Typography variant="h5">
+        Completed Proposals ({completedProposals ? completedProposals.length : 0})
+      </Typography>
+      <br />
+      {completedProposals ? (
+        completedProposals.map((proposal, index) => (
+          <Proposal key={index} {...{proposal}} />
+        ))
+      ) : (
+        <CircularProgress />
+      )}
+
+      <br /><br />
+
+      <Typography variant="h5">
+        Inactive Proposals ({inactiveProposals ? inactiveProposals.length : 0})
+      </Typography>
+      <br />
+      {inactiveProposals ? (
+        inactiveProposals.map((proposal, index) => (
+          <Proposal key={index} {...{proposal}} />
+        ))
+      ) : (
+        <CircularProgress />
+      )}
+    </>
+  );
+}
