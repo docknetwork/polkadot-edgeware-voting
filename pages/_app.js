@@ -3,6 +3,7 @@ import App from 'next/app';
 import {MuiThemeProvider} from '@material-ui/core/styles';
 import {withStyles} from '@material-ui/core/styles';
 import {PageTransition} from 'next-page-transitions';
+import 'normalize.css';
 
 import materialTheme from '../components/theme';
 
@@ -65,6 +66,10 @@ class MyApp extends App {
           .loading-indicator-enter-active {
             opacity: 1;
             transition: opacity ${TIMEOUT}ms;
+          }
+
+          a {
+            text-decoration: none;
           }
         `}</style>
       </>
