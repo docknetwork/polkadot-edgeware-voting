@@ -20,6 +20,9 @@ import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import Container from '@material-ui/core/Container';
 import Avatar from '@material-ui/core/Avatar';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import DoneIcon from '@material-ui/icons/Done';
 
 import substrateService, {nodeAddress} from '../services/substrate';
 
@@ -109,6 +112,9 @@ export default function PersistentDrawerLeft({children}) {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   const [nodeState, setNodeState] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const accounts = substrateService.getAccounts();
+  const account = substrateService.getAccount();
 
   useEffect(() => {
     substrateService.onUpdateState.subscribe(setNodeState);
@@ -124,6 +130,14 @@ export default function PersistentDrawerLeft({children}) {
 
   const handleDrawerClose = () => {
     setOpen(false);
+  };
+
+  const handleClick = event => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
   return (
@@ -152,13 +166,33 @@ export default function PersistentDrawerLeft({children}) {
               </Typography>
 
               <section className={classes.rightToolbar}>
-                {substrateService.getAccount() && (
-                  <IconButton color="inherit" aria-label="My Account">
+                {account && (
+                  <IconButton color="inherit" aria-label="My Account" aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
                     <Avatar>
-                      {substrateService.getAccount().meta.name.substr(0, 1)}
+                      {account.meta.name.substr(0, 1)}
                     </Avatar>
                   </IconButton>
                 )}
+
+                <Menu
+                  id="simple-menu"
+                  anchorEl={anchorEl}
+                  keepMounted
+                  open={Boolean(anchorEl)}
+                  onClose={handleClose}
+                >
+                  {accounts.map((availableAccount, index) => (
+                    <MenuItem onClick={() => {
+                      substrateService.setAccount(availableAccount);
+                      handleClose();
+                    }} key={index}>
+                      Use Account: {availableAccount.meta.name}
+                      {account === availableAccount && (
+                        <DoneIcon />
+                      )}
+                    </MenuItem>
+                  ))}
+                </Menu>
               </section>
             </>
           ) : (

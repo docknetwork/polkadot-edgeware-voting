@@ -67,6 +67,10 @@ class SubstrateService {
     }
     this.onConnectCallbacks = [];
 
+    // add dev accounts
+    this.account = this.keyring.addFromUri('//Alice', {name: 'Alice'}); // dev only, of course
+    this.keyring.addFromUri('//Bob', {name: 'Bob'}); // dev only, of course
+
     return this.setState({
       ...this.state,
       chain,
@@ -231,15 +235,28 @@ class SubstrateService {
     return result;
   }
 
+  getAccounts() {
+    if (this.keyring && this.state && this.state.connected) {
+      return this.keyring.getPairs();
+    } else {
+      return [];
+    }
+  }
+
+  setAccount(account) {
+    this.account = account;
+  }
+
   getAccount() {
+    if (this.account) {
+      return this.account;
+    }
+
     if (this.keyring) {
-      // TODO: allow to set custom accounts
-      // console.log('pairs', this.keyring.getPairs())
-      const alice = this.keyring.addFromUri('//Alice', {name: 'Alice'}); // dev only, of course
-      console.log(
-        `${alice.meta.name}: has address ${alice.address} with publicKey [${alice.publicKey}]`
-      );
-      return alice;
+      const accounts = this.getAccounts();
+      if (accounts.length) {
+        return accounts[0];
+      }
     }
   }
 
