@@ -10,6 +10,8 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import DoneIcon from '@material-ui/icons/Done';
+import Snackbar from '@material-ui/core/Snackbar';
+import Alert from '@material-ui/lab/Alert';
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -27,6 +29,8 @@ const Proposal = () => {
   const [voteRecords, setVoteRecords] = useState();
   const [results, setResults] = useState();
   const [vote, setVote] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
 
   async function loadProposal() {
     const data = await substrateService.getProposal(hash);
@@ -34,7 +38,6 @@ const Proposal = () => {
     const voteRecords = await substrateService.getVoteRecords(data.toJSON().vote_id);
     const voteData = voteRecords.toJSON();
     setVoteRecords(voteData);
-    console.log('voteData', voteData)
 
     if (voteData) {
       const voteResults = {};
@@ -75,7 +78,13 @@ const Proposal = () => {
   }
 
   function handleVote() {
-    substrateService.vote(voteRecords.id, vote);
+    setIsSubmitting(true);
+    substrateService.vote(voteRecords.id, vote, false, () => {
+      setIsSubmitting(false);
+      setHasSubmitted(true);
+    }, () => {
+      setIsSubmitting(false);
+    });
   }
 
   useEffect(() => {
@@ -137,6 +146,7 @@ const Proposal = () => {
                       variant="contained"
                       type="button"
                       onClick={handleVote}
+                      disabled={isSubmitting}
                       >
                       Submit Vote
                     </Button>
@@ -146,6 +156,14 @@ const Proposal = () => {
             )}
           </CardContent>
         </Card>
+
+        <Snackbar open={isSubmitting}>
+          <Alert severity="info">Submitting transaction, please wait...</Alert>
+        </Snackbar>
+
+        <Snackbar open={hasSubmitted}>
+          <Alert severity="success">Vote submitted!</Alert>
+        </Snackbar>
 
         <br />
 
@@ -173,7 +191,7 @@ const Proposal = () => {
                           {row[0]}
                         </TableCell>
                         {voteRecords.outcomes.map((outcome, index) => (
-                          <TableCell align="right">
+                          <TableCell align="right" key={index}>
                             {row[1].indexOf(outcome) > -1 && (
                               <DoneIcon />
                             )}
@@ -210,7 +228,7 @@ const Proposal = () => {
                           {row[0]}
                         </TableCell>
                         {voteRecords.outcomes.map((outcome, index) => (
-                          <TableCell align="right">
+                          <TableCell align="right" key={index}>
                             {row[1].indexOf(outcome) > -1 && (
                               <DoneIcon />
                             )}
