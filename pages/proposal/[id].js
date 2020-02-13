@@ -110,7 +110,7 @@ const Proposal = () => {
                   Reveals: {voteRecords ? voteRecords.reveals.length : 0}
                 </Typography>
                 <Typography variant="h6" color="textSecondary" gutterBottom>
-                  Stage: {JSON.stringify(voteRecords.data.stage)}
+                  Stage: {Object.keys(voteRecords.data.stage)[0]}
                 </Typography>
                 <Typography variant="h6" color="textSecondary" gutterBottom>
                   Vote Type: {voteRecords.data.vote_type.binary === null ? 'Binary' : 'MultiOption'}
@@ -118,14 +118,14 @@ const Proposal = () => {
                 <Typography variant="h6" color="textSecondary" gutterBottom>
                   Tally Type: {voteRecords.data.tally_type.oneperson === null ? 'OnePerson' : 'OneCoin'}
                 </Typography>
-                <Typography variant="h6" color="textSecondary" gutterBottom>
-                  isCommitReveal: {voteRecords.data.is_commit_reveal ? 'true' : 'false'}
+                <Typography variant="h6" color="textSecondary">
+                  Is Commit/Reveal: {voteRecords.data.is_commit_reveal ? 'true' : 'false'}
                 </Typography>
 
-                <br /><br />
+                <br />
 
                 <FormControl component="fieldset">
-                  <FormLabel component="legend">Your Vote</FormLabel>
+                  <FormLabel component="legend">Votes</FormLabel>
                   <RadioGroup aria-label="vote" name="vote" value={vote} onChange={handleVoteChange}>
                     {voteRecords.outcomes.map((outcome, index) => (
                       <FormControlLabel key={index} value={outcome} control={<Radio />} label={`${hexToAscii(outcome)} - ${results ? (results[outcome] || 0) : 0}/${voteRecords ? voteRecords.reveals.length : 0} votes`} />
@@ -133,16 +133,18 @@ const Proposal = () => {
                   </RadioGroup>
                 </FormControl>
 
-                <br /><br />
-
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  type="button"
-                  onClick={handleVote}
-                  >
-                  Submit Vote
-                </Button>
+                {Object.keys(voteRecords.data.stage)[0] === 'voting' && (
+                  <>
+                    <br /><br />
+                    <Button
+                      variant="contained"
+                      type="button"
+                      onClick={handleVote}
+                      >
+                      Submit Vote
+                    </Button>
+                  </>
+                )}
               </>
             )}
           </CardContent>
