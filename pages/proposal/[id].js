@@ -30,7 +30,7 @@ const Proposal = () => {
   async function loadProposal() {
     const data = await substrateService.getProposal(hash);
     setProposal(data.toJSON());
-    const voteRecords = await substrateService.getVoteRecords(data.toJSON().index);
+    const voteRecords = await substrateService.getVoteRecords(data.toJSON().vote_id);
     const voteData = voteRecords.toJSON();
     setVoteRecords(voteData);
     console.log('setProposal', data.toJSON())
