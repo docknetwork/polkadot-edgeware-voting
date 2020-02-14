@@ -4,6 +4,8 @@ A working example application using the PolkadotJS API and the Edgeware Substrat
 
 Currently the app only supports two development accounts, Alice and Bob. The node must be run in development mode to submit proposals successfully, but the application can be easily adapted to support accounts outside of development mode.
 
+https://docknetwork.github.io/polkadot-edgeware-voting/
+
 ### Setup
 
 Install Node and Yarn for the frontend, read section on starting a local edgeware node for chain setup. Run `yarn` command to setup packages.
@@ -31,3 +33,4 @@ Run in development mode:
 
 ### Notes
 - UI Types for PolkadotJS apps: https://gist.github.com/drewstone/cee02c503107d06badbdc49bea35c526
+- Run `yarn deploy` to deploy to GitHub pages
