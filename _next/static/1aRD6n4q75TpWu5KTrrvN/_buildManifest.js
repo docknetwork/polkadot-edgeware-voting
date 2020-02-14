@@ -1,0 +1,1 @@
+self.__BUILD_MANIFEST = (function(a,b){return {"/advance-proposal":[a,b],"/proposal/[id]":[a],"/submit-proposal":[a,b]}}("static\u002Fchunks\u002F427695d34746ee35b21b309d750682f00fb3dd2e.0e7c7efa6d95fcced560.js","static\u002Fchunks\u002Fc548f0a4d1c065293f2a2df4345b4f53e6401f57.f5b17285832e251a64d7.js"));self.__BUILD_MANIFEST_CB && self.__BUILD_MANIFEST_CB()
